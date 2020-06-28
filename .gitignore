@@ -1,0 +1,5 @@
+vignettes/*.html
+vignettes/*.R
+vignettes/ss3-*
+*.zip
+*.tar.gz
