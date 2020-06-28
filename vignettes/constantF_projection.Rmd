@@ -1,0 +1,60 @@
+---
+title: "Projecting under constant F"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{constant F projection}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+run_path <- basename(tempfile(pattern = "ss3-"))
+dir.create(run_path, showWarnings = FALSE)
+knitr::opts_knit$set(root.dir = run_path)
+
+options(max.print = 10000)
+```
+
+This vignette describes projection of stock biomass under a constant fishing mortality scenario.  
+
+```{r libraries}
+library(skj)
+library(r4ss)
+```
+
+
+```{r}
+FSCALAR <- 1.2
+
+# copy files from package
+copy_ss3_files(".")
+
+# read SS files
+skj_forecast <- SS_readforecast("forecast.ss", verbose = FALSE)
+skj_dat      <- SS_readdat("data.ss", verbose = FALSE)
+skj_starter  <- SS_readstarter("starter.ss", verbose = FALSE)
+
+# use annual F-scalar
+skj_forecast$Forecast <- 5
+skj_forecast$F_scalar <- FSCALAR
+skj_forecast$Nforecastyrs <- 20
+skj_forecast$ForeCatch <- NULL
+
+SS_writeforecast(skj_forecast, dir = ".", overwrite = TRUE, verbose = FALSE)
+
+run_ss3()
+```
+
+```{r, echo = FALSE, fig.width = 8, fig.height = 6}
+out <- SS_output(dir = ".", covar = FALSE, printstats = FALSE, verbose = FALSE)
+
+plot_Fsum(skj_dat, out)
+abline(h = FSCALAR, lty = 2)
+mtext("Constant F projection (F = 1.2)")
+```
+
