@@ -17,8 +17,8 @@
 #' @export
 copy_ss3_files <- function(run, path, overwrite = TRUE) {
   
-  if (!dir.exists(path)) {
-    dir.create(path, run, recursive = TRUE)
+  if (!dir.exists(file.path(path, run))) {
+    dir.create(file.path(path, run), recursive = TRUE)
   }
   
   # Find the data in the package:
