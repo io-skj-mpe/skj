@@ -1,5 +1,8 @@
 suppressWarnings(library(testthat))
 
+wd <- getwd()
+setwd("inst/tests")
+
 library(skj)
 library(r4ss)
 
@@ -95,3 +98,5 @@ message("Deleting test directory")
 unlink(run_path, recursive = TRUE)
 
 message("Testing complete")
+setwd(wd)
+
