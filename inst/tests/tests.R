@@ -130,6 +130,49 @@ test_that("test_NwtSel_at_age", {
   expect_true(test_NwtSel_at_age(skj_dat, skj_rep))
 })
 
+test_Nex_at_age <- function(data, report, iter = 100) {
+  
+  Nages <- data$Nages
+  
+  fleet_names <- data$fleetname
+  
+  surveytiming <- data$surveytiming
+  
+  # raw data
+  Sraw <- subset(report$ageselex, Factor == "Asel2")[, -1]
+  Nraw <- report$natage
+  
+  # function to be tested
+  Nex <- get_Nex_at_age(data, report)
+  
+  test <- logical(iter)
+  
+  for (i in 1:iter) {
+    
+    loc <- sample(nrow(Nex), 1)
+    
+    # function output
+    Nex_fold <- Nex[loc, ]
+    
+    # fleet number
+    Fleet_loc <- match(Nex_fold$Fleet, fleet_names)
+    
+    # raw inputs
+    Sraw_fold <- subset(Sraw, Fleet ==  Fleet_loc & Yr == Nex_fold$Yr & Seas == Nex_fold$Seas & Sex == Nex_fold$Sex & Morph == Nex_fold$Morph)
+    Nraw_fold <- subset(Nraw, Yr == Nex_fold$Yr & Seas == Nex_fold$Seas & Sex == Nex_fold$Sex & Morph == Nex_fold$Morph)[ifelse(surveytiming[Fleet_loc] < 0, 1, 2),]
+    
+    # check output from function equals 
+    # expected output from raw data
+    test[i] <- all(Nex_fold[,c(7:(Nages + 7))] == Nraw_fold[,c(13:(Nages + 13))] * Sraw_fold[,c(7:(Nages + 7))])
+  }
+  return(all(test))
+}
+
+test_that("test_Nex_at_age", {
+  expect_true(test_Nex_at_age(skj_dat, skj_rep))
+})
+
+
 #### END OF TESTS
 setwd("../..")
 
