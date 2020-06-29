@@ -91,6 +91,45 @@ test_that("test_wtSel_at_age", {
   expect_true(test_wtSel_at_age(skj_dat, skj_rep))
 })
 
+test_NwtSel_at_age <- function(data, report, iter = 100) {
+    
+    Nages <- data$Nages
+    
+    fleet_names <- data$fleetname
+    
+    # NUMBERS AT AGE
+    N <- get_N_at_age(data, report)
+    
+    # WEIGHT * SELECTIVITY AT AGE
+    WtSel <- get_wtSel_at_age(data, report)
+    
+    # function to be tested
+    NwtSel <- get_NwtSel_at_age(data, report)
+    
+    test <- logical(iter)
+    
+    for (i in 1:iter) {
+        
+        loc <- sample(nrow(NwtSel), 1)
+        
+        # function output
+        NwtSel_fold <- NwtSel[loc, ]
+        
+        # raw inputs
+        N_fold     <- subset(N,     Fleet == NwtSel_fold$Fleet & Yr == NwtSel_fold$Yr & Seas == NwtSel_fold$Seas & Sex == NwtSel_fold$Sex & Morph == NwtSel_fold$Morph)
+        WtSel_fold <- subset(WtSel, Fleet == NwtSel_fold$Fleet & Yr == NwtSel_fold$Yr & Seas == NwtSel_fold$Seas & Sex == NwtSel_fold$Sex & Morph == NwtSel_fold$Morph)
+
+        # check output from function equals 
+        # expected output from raw data
+        test[i] <- all(NwtSel_fold[,c(7:(Nages + 7))] == N_fold[,c(14:(Nages + 14))] * WtSel_fold[,c(6:(Nages + 6))])
+    }
+    return(all(test))
+}
+
+test_that("test_NwtSel_at_age", {
+  expect_true(test_NwtSel_at_age(skj_dat, skj_rep))
+})
+
 #### END OF TESTS
 setwd("../..")
 
