@@ -7,6 +7,12 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+This vignette describes projection of stock biomass under a constant fishing mortality scenario. 
+
+```{r}
+run <- "io_h90_MAt_t4_rttp_tm25"
+```
+
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -14,13 +20,11 @@ knitr::opts_chunk$set(
 )
 
 run_path <- basename(tempfile(pattern = "ss3-"))
-dir.create(run_path, showWarnings = FALSE)
+dir.create(run_path, showWarnings = FALSE, recursive = TRUE)
 knitr::opts_knit$set(root.dir = run_path)
 
 options(max.print = 10000)
 ```
-
-This vignette describes projection of stock biomass under a constant fishing mortality scenario.  
 
 ```{r libraries}
 library(skj)
@@ -29,10 +33,12 @@ library(r4ss)
 
 
 ```{r}
-FSCALAR <- 1.2
+FSCALAR <- 6
 
 # copy files from package
-copy_ss3_files(".")
+copy_ss3_files(run = run, path = ".")
+
+setwd(run)
 
 # read SS files
 skj_forecast <- SS_readforecast("forecast.ss", verbose = FALSE)
@@ -51,10 +57,10 @@ run_ss3()
 ```
 
 ```{r, echo = FALSE, fig.width = 8, fig.height = 6}
-out <- SS_output(dir = ".", covar = FALSE, printstats = FALSE, verbose = FALSE)
+out <- SS_output(dir = run, covar = FALSE, printstats = FALSE, verbose = FALSE)
 
 plot_Fsum(skj_dat, out)
 abline(h = FSCALAR, lty = 2)
-mtext("Constant F projection (F = 1.2)")
+mtext(paste0("Constant F projection (F = ", FSCALAR, ")"))
 ```
 
