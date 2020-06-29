@@ -1,0 +1,135 @@
+---
+title: "Generating the exploitable biomass and abundance indices"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Exploitable biomass and abundance}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+This vignette describes the generation of first, the exploitable biomass, and second the associated abundance indices form the output of a SS3 model fit. 
+
+```{r}
+run <- "io_h90_MAt_t4_rttp_tm25"
+```
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+run_path <- basename(tempfile(pattern = "ss3-"))
+dir.create(run_path, showWarnings = FALSE, recursive = TRUE)
+knitr::opts_knit$set(root.dir = run_path)
+
+options(max.print = 10000)
+```
+
+```{r libraries}
+library(skj)
+library(r4ss)
+library(plyr)
+library(dplyr)
+library(ggplot2)
+```
+
+```{r}
+FSCALAR <- 3
+
+# copy files from package
+copy_ss3_files(run = run, path = ".")
+
+setwd(run)
+
+# read SS files
+skj_forecast <- SS_readforecast("forecast.ss", verbose = FALSE)
+skj_dat      <- SS_readdat("data.ss", verbose = FALSE)
+skj_starter  <- SS_readstarter("starter.ss", verbose = FALSE)
+
+# use annual F-scalar
+skj_forecast$Forecast <- 5
+skj_forecast$F_scalar <- FSCALAR
+skj_forecast$Nforecastyrs <- 20
+skj_forecast$ForeCatch <- NULL
+
+SS_writeforecast(skj_forecast, dir = ".", overwrite = TRUE, verbose = FALSE)
+
+run_ss3()
+```
+
+
+```{r}
+skj_out <- SS_output(dir = run, covar = FALSE, printstats = FALSE, verbose = FALSE)
+
+# get exploitable biomass
+# from numbers*weight*sel
+skj_bex <- get_Bex(skj_dat, skj_out)
+colnames(skj_bex)[ncol(skj_bex)] <- "Vuln"
+
+index_fleets <- read_fleetinfo(skj_dat) %>% filter(type == "index") %>% select(fleetname)
+index_units  <- read_fleetinfo(skj_dat) %>% filter(type == "index") %>% select(Fleet = fleetname, units)
+
+skj_bex <- skj_bex %>% filter(Fleet %in% index_fleets[,1])
+skj_bex <- ddply(skj_bex, .(Area, Fleet, Seas, Yr), summarise, Vuln = sum(Vuln)) # which Morph?
+
+# create year:season
+skj_bex <- skj_bex %>% mutate(Yr_Seas = Yr + (Seas - 1) / 4 + 0.125) %>% as.data.frame()
+
+# merge
+skj_vuln <- merge(skj_bex, index_units)
+
+skj_vuln$Fleet_label <- with(skj_vuln, paste0(Fleet, " (", units, ")"))
+
+# get from model report file
+skj_vuln_out <- skj_out$cpue
+colnames(skj_vuln_out)[9] <- "Vuln"
+
+skj_vuln_out <- skj_vuln_out %>% filter(Fleet_name %in% index_fleets[,1])
+skj_vuln_out <- skj_vuln_out %>% select(-Fleet)
+colnames(skj_vuln_out)[1] <- "Fleet"
+
+# safe removal of Subseas and Month
+skj_vuln_out <- ddply(skj_vuln_out, .(Area, Fleet, Seas, Yr), summarise, Vuln = unique(Vuln), Obs = unique(Obs), Exp = unique(Exp))
+
+# create year:season
+skj_vuln_out <- skj_vuln_out %>% mutate(Yr_Seas = Yr + (Seas - 1) / 4 + 0.125) 
+
+skj_vuln_out <- merge(skj_vuln_out, index_units)
+skj_vuln_out$Fleet_label <- with(skj_vuln_out, paste0(Fleet, " (", units, ")"))
+```
+
+```{r, echo = FALSE, fig.width = 7, fig.height = 5}
+# PLOTS VULNERABLE NUMBERS/BIOMASS
+gg <- ggplot() + 
+  geom_line(data = skj_vuln_out, aes(Yr_Seas, Vuln / 1e3), col = "red", size = 3) + 
+  geom_line(data = skj_vuln, aes(Yr_Seas, Vuln / 1e3)) + 
+  facet_wrap(~Fleet_label, scales = "free_y") +
+  geom_vline(xintercept = skj_out$endyr, col = "blue") +
+  labs(y = "Vulnerable Biomass", x = "Year (Season)") +
+  theme_bw(base_size = 16)
+print(gg)
+```
+
+
+```{r, echo = FALSE, fig.width = 7, fig.height = 5}
+# FULL JOIN
+skj_vuln_full <- left_join(skj_vuln, skj_vuln_out, by = c("Fleet", "Area", "Seas", "Yr", "Yr_Seas", "units", "Fleet_label"), suffix = c("", "_out"))
+
+Q <- skj_out$cpue %>% group_by(Fleet) %>% summarise(Fleet_name = unique(Fleet_name), Q = unique(Calc_Q))
+Q <- Q %>% select(-Fleet) %>% rename(Fleet = Fleet_name)
+
+dfr <- left_join(skj_vuln_full, Q, by = "Fleet")
+
+# PLOT MODEL FIT
+gg <- ggplot(dfr) +
+  geom_point(aes(Yr_Seas, Obs)) +
+  geom_point(aes(Yr_Seas, Exp), col = "red", size = 3) +
+  geom_line(aes(Yr_Seas, Vuln * Q)) +
+  facet_wrap(~Fleet_label, scales = "free_y")+
+  geom_vline(xintercept = skj_out$endyr, col = "blue") +
+  labs(y = "CPUE", x = "Year (Season)") +
+  theme_bw(base_size = 16)
+print(gg)
+```
+
