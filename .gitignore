@@ -3,3 +3,4 @@ vignettes/*.R
 vignettes/ss3-*
 *.zip
 *.tar.gz
+zzz.R
