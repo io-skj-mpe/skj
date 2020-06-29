@@ -2,7 +2,10 @@
 
 export(copy_ss3_files)
 export(get_Fsum)
+export(get_N_at_age)
+export(get_S_at_age)
 export(get_catchSum)
+export(get_wtSel_at_age)
 export(plot_Fsum)
 export(plot_catchSum)
 export(plot_kobe)

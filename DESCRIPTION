@@ -1,7 +1,7 @@
 Package: skj
 Type: Package
 Title: IOTC skipjack MPE
-Version: 0.0.5
+Version: 0.0.8
 Date: 2020-06-29
 Authors@R: c(person(c("Charles", "T.T."), "Edwards", 
     email = "cescapecs@gmail.com",
@@ -20,6 +20,9 @@ Imports:
 RoxygenNote: 7.1.0
 Encoding: UTF-8
 Collate: 
+    'get_N_at_age.R'
+    'get_S_at_age.R'
+    'get_wtSel_at_age.R'
     'plot_summaryF.R'
     'plot_summaryCatch.R'
     'plot_ssb.R'
