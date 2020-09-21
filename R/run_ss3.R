@@ -23,8 +23,7 @@ run_ss3 <- function(admb_options = "", hess = FALSE, ignore.stdout = TRUE, admb_
     system(paste0(paste0(bin, " "), ss_em_options, admb_options),
            invisible = TRUE, ignore.stdout = ignore.stdout,
            show.output.on.console = show.output.on.console, ...)
-    rename_ss3_files(path = "", ss_bin = ss_bin,
-                     extensions = c("par", "rep", "log", "bar"))
+    #rename_ss3_files(path = "", ss_bin = ss_bin, extensions = c("par", "rep", "log", "bar"))
   }
   Sys.sleep(admb_pause)
 }
