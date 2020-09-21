@@ -1,13 +1,13 @@
-#V3.30.15.09-trans;_2020_07_08;_Stock_Synthesis_by_Richard_Methot_(NOAA)_using_ADMB_12.0
+#V3.30.15.09-safe;_2020_07_06;_Stock_Synthesis_by_Richard_Methot_(NOAA)_using_ADMB_12.0
 #Stock Synthesis (SS) is a work of the U.S. Government and is not subject to copyright protection in the United States.
 #Foreign copyrights may apply. See copyright.txt for more information.
 #_user_support_available_at:NMFS.Stock.Synthesis@noaa.gov
 #_user_info_available_at:https://vlab.ncep.noaa.gov/group/stock-synthesis
-#_Start_time: Mon Sep 14 18:15:09 2020
+#_Start_time: Tue Sep 22 08:38:40 2020
 #_Number_of_datafiles: 1
 
 #_observed data: 
-#V3.30.15.09-trans;_2020_07_08;_Stock_Synthesis_by_Richard_Methot_(NOAA)_using_ADMB_12.0
+#V3.30.15.09-safe;_2020_07_06;_Stock_Synthesis_by_Richard_Methot_(NOAA)_using_ADMB_12.0
 #Stock Synthesis (SS) is a work of the U.S. Government and is not subject to copyright protection in the United States.
 #Foreign copyrights may apply. See copyright.txt for more information.
 1950 #_StartYr
@@ -1338,7 +1338,7 @@
 # -9999 0 0 0.0 0.0 # terminator for discard data 
 #
 0 #_use meanbodysize_data (0/1)
-#_COND_30 #_DF_for_meanbodysize_T-distribution_like
+#_COND_0 #_DF_for_meanbodysize_T-distribution_like
 # note:  type=1 for mean length; type=2 for mean body weight 
 #_yr month fleet part type obs stderr
 #  -9999 0 0 0 0 0 0 # terminator for mean body size data 
@@ -1807,14 +1807,14 @@
 #_Comp_Error2:  parm number  for dirichlet
 #_minsamplesize: minimum sample size; set to 1 to match 3.24, minimum value is 0.001
 #_mintailcomp addtocomp combM+F CompressBins CompError ParmSelect minsamplesize
-# -0.0001 0.01 0 0 0 0 1 #_fleet:1_PL
-# -0.0001 0.01 0 0 0 0 1 #_fleet:2_PSLS
-# -0.0001 0.01 0 0 0 0 1 #_fleet:3_PSFS
-# -0.0001 0.01 0 0 0 0 1 #_fleet:4_Other
-# -0.0001 0.01 0 0 0 0 1 #_fleet:5_PL_CPUE
-# -0.0001 0.01 0 0 0 0 1 #_fleet:6_PSLS_CPUE_LONG
-# -0.0001 0.01 0 0 0 0 1 #_fleet:7_OTHER_CPUE
-# 1 #_Lbin_method_for_Age_Data: 1=poplenbins; 2=datalenbins; 3=lengths
+# 0 0 0 0 0 0 0 #_fleet:1_PL
+# 0 0 0 0 0 0 0 #_fleet:2_PSLS
+# 0 0 0 0 0 0 0 #_fleet:3_PSFS
+# 0 0 0 0 0 0 0 #_fleet:4_Other
+# 0 0 0 0 0 0 0 #_fleet:5_PL_CPUE
+# 0 0 0 0 0 0 0 #_fleet:6_PSLS_CPUE_LONG
+# 0 0 0 0 0 0 0 #_fleet:7_OTHER_CPUE
+# 0 #_Lbin_method_for_Age_Data: 1=poplenbins; 2=datalenbins; 3=lengths
 # sex codes:  0=combined; 1=use female only; 2=use male only; 3=use both as joint sexxlength distribution
 # partition codes:  (0=combined; 1=discard; 2=retained
 #_yr month fleet sex part ageerr Lbin_lo Lbin_hi Nsamp datavector(female-male)
