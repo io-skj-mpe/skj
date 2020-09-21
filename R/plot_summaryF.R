@@ -3,15 +3,22 @@
 #' @param report output from call to r4ss::SS_output()
 #' @import plyr
 #' @export
-plot_summaryF <- function(report) {
-  
+get_summaryF <- function(report) {
+
   loc <- which(regexpr("^F_....", report$derived_quants$Label) > 0)
   
   values <- report$derived_quants$Value[loc]
   
   years <- report$startyr:(report$startyr + length(loc) - 1)
   
-  plot(values ~ years, type = "b", pch = 19, ylab = "Summary Fishing Mortality", xlab = "Year")
+  return(data.frame(Yr = years, value = values))
+}
+#' @export
+plot_summaryF <- function(report) {
+  
+  x <- get_summaryF(report)
+  
+  plot(value ~ Yr, data = x, type = "b", pch = 19, ylab = "Summary Fishing Mortality", xlab = "Year")
   abline(v = report$endyr, col = 4, lty = 2)
   
 }
