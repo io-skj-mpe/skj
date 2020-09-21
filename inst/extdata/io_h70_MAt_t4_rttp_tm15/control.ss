@@ -1,0 +1,819 @@
+#V3.30.15.09-trans;_2020_07_08;_Stock_Synthesis_by_Richard_Methot_(NOAA)_using_ADMB_12.0
+#Stock Synthesis (SS) is a work of the U.S. Government and is not subject to copyright protection in the United States.
+#Foreign copyrights may apply. See copyright.txt for more information.
+#_user_support_available_at:NMFS.Stock.Synthesis@noaa.gov
+#_user_info_available_at:https://vlab.ncep.noaa.gov/group/stock-synthesis
+#_data_and_control_files: DATA.SS // CONTROL.SS
+0  # 0 means do not read wtatage.ss; 1 means read and use wtatage.ss and also read and use growth parameters
+1  #_N_Growth_Patterns (Growth Patterns, Morphs, Bio Patterns, GP are terms used interchangeably in SS)
+1 #_N_platoons_Within_GrowthPattern 
+#_Cond 1 #_Platoon_within/between_stdev_ratio (no read if N_platoons=1)
+#_Cond  1 #vector_platoon_dist_(-1_in_first_val_gives_normal_approx)
+#
+2 # recr_dist_method for parameters:  2=main effects for GP, Settle timing, Area; 3=each Settle entity; 4=none, only when N_GP*Nsettle*pop==1
+1 # not yet implemented; Future usage: Spawner-Recruitment: 1=global; 2=by area
+4 #  number of recruitment settlement assignments 
+0 # unused option
+#GPattern month  area  age (for each settlement assignment)
+ 1 1 1 0
+ 1 4 1 0
+ 1 7 1 0
+ 1 10 1 0
+#
+#_Cond 0 # N_movement_definitions goes here if Nareas > 1
+#_Cond 1.0 # first age that moves (real age at begin of season, not integer) also cond on do_migration>0
+#_Cond 1 1 1 2 4 10 # example move definition for seas=1, morph=1, source=1 dest=2, age1=4, age2=10
+#
+3 #_Nblock_Patterns
+ 5 5 1 #_blocks_per_pattern 
+# begin and end years of blocks
+ 1960 1988 1989 1993 1994 1998 1999 2003 2004 2009
+ 1960 1976 1977 1984 1985 1992 1993 2000 2001 2009
+ 1949 1949
+#
+# controls for all timevary parameters 
+1 #_env/block/dev_adjust_method for all time-vary parms (1=warn relative to base parm bounds; 3=no bound check)
+#
+# AUTOGEN
+ 1 1 1 1 1 # autogen: 1st element for biology, 2nd for SR, 3rd for Q, 4th reserved, 5th for selex
+# where: 0 = autogen time-varying parms of this category; 1 = read each time-varying parm line; 2 = read then autogen if parm min==-12345
+#
+#_Available timevary codes
+#_Block types: 0: P_block=P_base*exp(TVP); 1: P_block=P_base+TVP; 2: P_block=TVP; 3: P_block=P_block(-1) + TVP
+#_Block_trends: -1: trend bounded by base parm min-max and parms in transformed units (beware); -2: endtrend and infl_year direct values; -3: end and infl as fraction of base range
+#_EnvLinks:  1: P(y)=P_base*exp(TVP*env(y));  2: P(y)=P_base+TVP*env(y);  3: P(y)=f(TVP,env_Zscore) w/ logit to stay in min-max;  4: P(y)=2.0/(1.0+exp(-TVP1*env(y) - TVP2))
+#_DevLinks:  1: P(y)*=exp(dev(y)*dev_se;  2: P(y)+=dev(y)*dev_se;  3: random walk;  4: zero-reverting random walk with rho;  5: like 4 with logit transform to stay in base min-max
+#_DevLinks(more):  21-25 keep last dev for rest of years
+#
+#_Prior_codes:  0=none; 6=normal; 1=symmetric beta; 2=CASAL's beta; 3=lognormal; 4=lognormal with biascorr; 5=gamma
+#
+# setup for M, growth, wt-len, maturity, fecundity, (hermaphro), recr_distr, cohort_grow, (movement), (age error), (catch_mult), sex ratio 
+#
+1 #_natM_type:_0=1Parm; 1=N_breakpoints;_2=Lorenzen;_3=agespecific;_4=agespec_withseasinterpolate
+5 #_N_breakpoints
+ 0 1 2 3 4 # age(real) at M breakpoints
+#
+2 # GrowthModel: 1=vonBert with L1&L2; 2=Richards with L1&L2; 3=age_specific_K_incr; 4=age_specific_K_decr; 5=age_specific_K_each; 6=NA; 7=NA; 8=growth cessation
+0 #_Age(post-settlement)_for_L1;linear growth below this
+999 #_Growth_Age_for_L2 (999 to use as Linf)
+-999 #_exponential decay for growth above maxage (value should approx initial Z; -999 replicates 3.24; -998 to not allow growth above maxage)
+0  #_placeholder for future growth feature
+#
+0.1 #_SD_add_to_LAA (set to 0.1 for SS2 V1.x compatibility)
+0 #_CV_Growth_Pattern:  0 CV=f(LAA); 1 CV=F(A); 2 SD=F(LAA); 3 SD=F(A); 4 logSD=F(A)
+#
+1 #_maturity_option:  1=length logistic; 2=age logistic; 3=read age-maturity matrix by growth_pattern; 4=read age-fecundity; 5=disabled; 6=read length-maturity
+1 #_First_Mature_Age
+1 #_fecundity option:(1)eggs=Wt*(a+b*Wt);(2)eggs=a*L^b;(3)eggs=a*Wt^b; (4)eggs=a+b*L; (5)eggs=a+b*W
+0 #_hermaphroditism option:  0=none; 1=female-to-male age-specific fxn; -1=male-to-female age-specific fxn
+3 #_parameter_offset_approach (1=none, 2= M, G, CV_G as offset from female-GP1, 3=like SS2 V1.x)
+#
+#_growth_parms
+#_ LO HI INIT PRIOR PR_SD PR_type PHASE env_var&link dev_link dev_minyr dev_maxyr dev_PH Block Block_Fxn
+# Sex: 1  BioPattern: 1  NatMort
+ 0.075 2 0.8 0.8 1 6 -5 0 0 0 0 0.5 0 0 # NatM_p_1_Fem_GP_1
+ -3 3 -0 -0 1 6 -7 0 0 0 0 0.5 0 0 # NatM_p_2_Fem_GP_1
+ -3 3 -0 -0 1 6 -7 0 0 0 0 0.5 0 0 # NatM_p_3_Fem_GP_1
+ -3 3 -0 -0 1 6 -6 0 0 0 0 0.5 0 0 # NatM_p_4_Fem_GP_1
+ -3 3 -0 -0 1 6 -6 0 0 0 0 0.5 0 0 # NatM_p_5_Fem_GP_1
+# Sex: 1  BioPattern: 1  Growth
+ -30 30 5.89629 20 100 6 -5 0 0 0 0 0.5 0 0 # L_at_Amin_Fem_GP_1
+ 50 100 70.3509 70.2 100 6 -5 0 0 0 0 0.5 0 0 # L_at_Amax_Fem_GP_1
+ -3 3 0.34809 0.373 100 6 -1 0 0 0 0 0.5 0 0 # VonBert_K_Fem_GP_1
+ 0 5 2.9096 1 1 0 -5 0 0 0 0 0 0 0 # Richards_Fem_GP_1
+ 0.01 60 0.2 0.2 100 6 -5 0 0 0 0 0.5 0 0 # CV_young_Fem_GP_1
+ -3 3 -0.69 -0.69 100 6 -5 0 0 0 0 0.5 0 0 # CV_old_Fem_GP_1
+# Sex: 1  BioPattern: 1  WtLen
+ -3 3 4.97e-006 4.97e-006 100 6 -1 0 0 0 0 0.5 0 0 # Wtlen_1_Fem
+ 2 4 3.39292 3.39292 100 6 -1 0 0 0 0 0.5 0 0 # Wtlen_2_Fem
+# Sex: 1  BioPattern: 1  Maturity&Fecundity
+ 1 150 38 38 100 6 -1 0 0 0 0 0.5 0 0 # Mat50%_Fem
+ -8 1 -1.25 -1.25 100 6 -1 0 0 0 0 0.5 0 0 # Mat_slope_Fem
+ 0 2 1 1 100 6 -1 0 0 0 0 0.5 0 0 # Eggs/kg_inter_Fem
+ -1 1 0 0 100 6 -1 0 0 0 0 0.5 0 0 # Eggs/kg_slope_wt_Fem
+# Hermaphroditism
+#  Recruitment Distribution  
+ -4 4 0 0 99 0 -3 0 0 0 0 0.5 0 0 # RecrDist_GP_1
+ -4 4 0 0 99 0 -3 0 0 0 0 0.5 0 0 # RecrDist_Area_1
+ -4 4 0 0 99 0 -3 0 0 0 0 0.5 0 0 # RecrDist_timing_1
+ -4 4 0.190705 0 0.1 6 5 0 1 1983 2015 5 0 0 # RecrDist_timing_2
+ -4 4 0.00288104 0 0.1 6 5 0 1 1983 2015 5 0 0 # RecrDist_timing_3
+ -4 4 -0.226683 0 0.1 6 5 0 1 1983 2015 5 0 0 # RecrDist_timing_4
+#  Cohort growth dev base
+ 0.1 10 1 1 1 6 -1 0 0 0 0 0.5 0 0 # CohortGrowDev
+#  Movement
+#  Age Error from parameters
+#  catch multiplier
+#  fraction female, by GP
+ 0.000001 0.999999 0.5 0.5  0.5 0 -99 0 0 0 0 0 0 0 # FracFemale_GP_1
+#
+# timevary MG parameters 
+#_ LO HI INIT PRIOR PR_SD PR_type  PHASE
+ 0.0001 2 0.3 0.3 0.5 6 -5 # RecrDist_timing_2_dev_se
+ -0.99 0.99 0 0 0.5 6 -6 # RecrDist_timing_2_dev_autocorr
+ 0.0001 2 0.3 0.3 0.5 6 -5 # RecrDist_timing_3_dev_se
+ -0.99 0.99 0 0 0.5 6 -6 # RecrDist_timing_3_dev_autocorr
+ 0.0001 2 0.3 0.3 0.5 6 -5 # RecrDist_timing_4_dev_se
+ -0.99 0.99 0 0 0.5 6 -6 # RecrDist_timing_4_dev_autocorr
+# info on dev vectors created for MGparms are reported with other devs after tag parameter section 
+#
+#_seasonal_effects_on_biology_parms
+ 0 0 0 0 0 0 0 0 0 0 #_femwtlen1,femwtlen2,mat1,mat2,fec1,fec2,Malewtlen1,malewtlen2,L1,K
+#_ LO HI INIT PRIOR PR_SD PR_type PHASE
+#_Cond -2 2 0 0 -1 99 -2 #_placeholder when no seasonal MG parameters
+#
+6 #_Spawner-Recruitment; Options: 1=NA; 2=Ricker; 3=std_B-H; 4=SCAA; 5=Hockey; 6=B-H_flattop; 7=survival_3Parm; 8=Shepherd_3Parm; 9=RickerPower_3parm
+0  # 0/1 to use steepness in initial equ recruitment calculation
+0  #  future feature:  0/1 to make realized sigmaR a function of SR curvature
+#_          LO            HI          INIT         PRIOR         PR_SD       PR_type      PHASE    env-var    use_dev   dev_mnyr   dev_mxyr     dev_PH      Block    Blk_Fxn #  parm_name
+             0            35       13.3145            20            10             6          1          0          0          0          0          0          0          0 # SR_LN(R0)
+         0.201          0.99           0.7           0.7            10             6         -2          0          0          0          0          0          0          0 # SR_BH_flat_steep
+             0            10      0.236202           0.6            10             6          6          0          0          0          0          0          0          0 # SR_sigmaR
+            -5             5             0             0             1             6         -4          0          0          0          0          0          0          0 # SR_regime
+             0           0.5             0             0            99             0         -2          0          0          0          0          0          0          0 # SR_autocorr
+#_no timevary SR parameters
+1 #do_recdev:  0=none; 1=devvector (R=F(SSB)+dev); 2=deviations (R=F(SSB)+dev); 3=deviations (R=R0*dev; dev2=R-f(SSB)); 4=like 3 with sum(dev2) adding penalty
+1983 # first year of main recr_devs; early devs can preceed this era
+2014 # last year of main recr_devs; forecast devs start in following year
+4 #_recdev phase 
+1 # (0/1) to read 13 advanced options
+ 0 #_recdev_early_start (0=none; neg value makes relative to recdev_start)
+ -4 #_recdev_early_phase
+ -10 #_forecast_recruitment phase (incl. late recr) (0 value resets to maxphase+1)
+ 1 #_lambda for Fcast_recr_like occurring before endyr+1
+ 1960 #_last_yr_nobias_adj_in_MPD; begin of ramp
+ 1983 #_first_yr_fullbias_adj_in_MPD; begin of plateau
+ 2014 #_last_yr_fullbias_adj_in_MPD
+ 2015 #_end_yr_for_ramp_in_MPD (can be in forecast to shape ramp, but SS sets bias_adj to 0.0 for fcast yrs)
+ 1 #_max_bias_adj_in_MPD (typical ~0.8; -3 sets all years to 0.0; -2 sets all non-forecast yrs w/ estimated recdevs to 1.0; -1 sets biasadj=1.0 for all yrs w/ recdevs)
+ 0 #_period of cycles in recruitment (N parms read below)
+ -15 #min rec_dev
+ 15 #max rec_dev
+ 0 #_read_recdevs
+#_end of advanced SR options
+#
+#_placeholder for full parameter lines for recruitment cycles
+# read specified recr devs
+#_Yr Input_value
+#
+# all recruitment deviations
+#  1983R 1984R 1985R 1986R 1987R 1988R 1989R 1990R 1991R 1992R 1993R 1994R 1995R 1996R 1997R 1998R 1999R 2000R 2001R 2002R 2003R 2004R 2005R 2006R 2007R 2008R 2009R 2010R 2011R 2012R 2013R 2014R 2015F 2016F 2017F 2018F 2019F 2020F 2021F 2022F 2023F 2024F 2025F 2026F
+#  0.0024967 0.26235 -0.235547 -0.327675 0.408614 -0.339448 0.0208268 0.187644 0.0976486 -0.052048 0.151205 0.00559325 -0.135766 -0.226228 -0.137265 0.474964 0.105212 -0.0871009 0.435823 -0.0116525 0.0397854 0.411688 0.0967933 -0.440098 0.0616897 0.127692 -0.0402937 -0.227636 -0.423832 -0.0021254 0.0640033 -0.267314 0 0 0 0 0 0 0 0 0 0 0 0
+# implementation error by year in forecast:  0 0 0 0 0 0 0 0 0 0
+#
+#Fishing Mortality info 
+0.15 # F ballpark value in units of annual_F
+2000 # F ballpark year (neg value to disable)
+3 # F_Method:  1=Pope; 2=instan. F; 3=hybrid (hybrid is recommended)
+7 # max F or harvest rate, depends on F_Method
+# no additional F input needed for Fmethod 1
+# if Fmethod=2; read overall start F value; overall phase; N detailed inputs to read
+# if Fmethod=3; read N iterations for tuning for Fmethod 3
+5  # N iterations for tuning F in hybrid method (recommend 3 to 7)
+#
+#_initial_F_parms; count = 0
+#_ LO HI INIT PRIOR PR_SD  PR_type  PHASE
+#2026 2301
+# F rates by fleet
+# Yr:  1950 1950 1950 1950 1951 1951 1951 1951 1952 1952 1952 1952 1953 1953 1953 1953 1954 1954 1954 1954 1955 1955 1955 1955 1956 1956 1956 1956 1957 1957 1957 1957 1958 1958 1958 1958 1959 1959 1959 1959 1960 1960 1960 1960 1961 1961 1961 1961 1962 1962 1962 1962 1963 1963 1963 1963 1964 1964 1964 1964 1965 1965 1965 1965 1966 1966 1966 1966 1967 1967 1967 1967 1968 1968 1968 1968 1969 1969 1969 1969 1970 1970 1970 1970 1971 1971 1971 1971 1972 1972 1972 1972 1973 1973 1973 1973 1974 1974 1974 1974 1975 1975 1975 1975 1976 1976 1976 1976 1977 1977 1977 1977 1978 1978 1978 1978 1979 1979 1979 1979 1980 1980 1980 1980 1981 1981 1981 1981 1982 1982 1982 1982 1983 1983 1983 1983 1984 1984 1984 1984 1985 1985 1985 1985 1986 1986 1986 1986 1987 1987 1987 1987 1988 1988 1988 1988 1989 1989 1989 1989 1990 1990 1990 1990 1991 1991 1991 1991 1992 1992 1992 1992 1993 1993 1993 1993 1994 1994 1994 1994 1995 1995 1995 1995 1996 1996 1996 1996 1997 1997 1997 1997 1998 1998 1998 1998 1999 1999 1999 1999 2000 2000 2000 2000 2001 2001 2001 2001 2002 2002 2002 2002 2003 2003 2003 2003 2004 2004 2004 2004 2005 2005 2005 2005 2006 2006 2006 2006 2007 2007 2007 2007 2008 2008 2008 2008 2009 2009 2009 2009 2010 2010 2010 2010 2011 2011 2011 2011 2012 2012 2012 2012 2013 2013 2013 2013 2014 2014 2014 2014 2015 2015 2015 2015 2016 2016 2016 2016 2017 2017 2017 2017 2018 2018 2018 2018 2019 2019 2019 2019 2020 2020 2020 2020 2021 2021 2021 2021 2022 2022 2022 2022 2023 2023 2023 2023 2024 2024 2024 2024 2025 2025 2025 2025 2026 2026 2026 2026
+# seas:  1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4 1 2 3 4
+# PL 0.01243 0.012493 0.0124966 0.0124635 0.0124902 0.0125525 0.0125547 0.0125197 0.0125424 0.0125987 0.0125948 0.0125542 0.0141446 0.0142052 0.0141982 0.0141502 0.0141695 0.0142287 0.0142204 0.0141707 0.0141882 0.0142455 0.0142354 0.0141845 0.0142016 0.0142586 0.0142484 0.014197 0.0157937 0.015859 0.0158487 0.015793 0.0158116 0.0158735 0.0158599 0.0158005 0.015817 0.0158786 0.0158646 0.0158047 0.0138588 0.017891 0.0144611 0.0108564 0.0138209 0.0166902 0.0105559 0.00964738 0.0141769 0.0161316 0.0109821 0.00944713 0.0146422 0.0152933 0.0111447 0.0097226 0.0146671 0.0153183 0.0111622 0.00973743 0.0259053 0.0270689 0.0197379 0.0172252 0.0311687 0.032581 0.0237623 0.0207417 0.03502 0.0365971 0.0266898 0.0232882 0.0325442 0.033999 0.0247793 0.0216186 0.0365364 0.0381724 0.0278216 0.0242676 0.0402588 0.0237852 0.058145 0.0567296 0.0413837 0.0411403 0.0437157 0.0560025 0.0416543 0.0241724 0.0281456 0.0198938 0.0389023 0.0208163 0.0291313 0.03845 0.0311448 0.0494414 0.0308052 0.0362421 0.0238252 0.03075 0.0248528 0.0186513 0.0364455 0.0418885 0.020605 0.0232819 0.0266676 0.0261881 0.021236 0.0158674 0.0278391 0.0206508 0.0198988 0.0181635 0.03012 0.0300794 0.0233948 0.0298302 0.0416495 0.0357975 0.0333851 0.0351955 0.0372972 0.0303553 0.032885 0.0292874 0.0243833 0.0323539 0.0263301 0.0183576 0.0386727 0.0396124 0.0230005 0.0274451 0.0517293 0.0403597 0.0466083 0.07771 0.0781913 0.0599137 0.0480257 0.0950993 0.0855295 0.0613265 0.0694724 0.110549 0.105073 0.103162 0.0707924 0.0645587 0.144824 0.0768068 0.0848414 0.151165 0.139848 0.115545 0.107653 0.119409 0.130207 0.0938897 0.123511 0.184464 0.0860693 0.137659 0.134442 0.133063 0.118072 0.143599 0.0769892 0.148056 0.11827 0.125624 0.126323 0.145582 0.169206 0.15968 0.165563 0.139256 0.184748 0.14622 0.115975 0.247233 0.191814 0.208911 0.157701 0.168117 0.19385 0.203742 0.228589 0.229936 0.287573 0.213321 0.206959 0.311966 0.263785 0.281948 0.266446 0.210413 0.247188 0.190842 0.203071 0.184477 0.245205 0.186639 0.221763 0.289298 0.31321 0.270252 0.276265 0.323156 0.312603 0.296441 0.249723 0.330182 0.375362 0.22529 0.274598 0.350206 0.326212 0.386384 0.317416 0.430437 0.439839 0.555124 0.264512 0.439153 0.466601 0.404791 0.283432 0.492203 0.311607 0.336712 0.424341 0.480721 0.267632 0.266183 0.238412 0.35252 0.34602 0.277696 0.304312 0.333995 0.355873 0.204322 0.207099 0.275638 0.198323 0.278071 0.218673 0.45789 0.240104 0.336241 0.413266 0.588777 0.350735 0.542838 0.243156 0.324748 0.491505 0.438094 0.190279 0.423187 0.316731 0.350561 0.206395 0.6121 0.459137 0.387844 0.161367 0.359482 0.407654 0.345883 0.145102 0.325018 0.370161 0.315926 0.133567 0.300678 0.343721 0.294732 0.125351 0.283299 0.324846 0.279588 0.119463 0.270842 0.311329 0.268739 0.115237 0.261897 0.301629 0.260951 0.112198 0.255463 0.294655 0.255349 0.110009 0.250828 0.289631 0.251312 0.10843 0.247483 0.286006 0.248399 0.10729 0.245067
+# PSLS 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.000621041 0 0 0 0.00140106 0.000226194 0 0.00183378 0.0081239 0.00794142 0.00381196 0.0142488 0.00581509 0.0186234 0.0474682 0.0580886 0.0171281 0.0280752 0.0751371 0.0983923 0.0302732 0.05268 0.0839925 0.0908516 0.04953 0.081118 0.0938614 0.0698069 0.0262412 0.0494593 0.149062 0.0999557 0.0513297 0.0507819 0.151925 0.167632 0.0647239 0.0845478 0.132641 0.1137 0.0301993 0.0892769 0.130264 0.19349 0.0771723 0.130599 0.145478 0.17834 0.0896186 0.127277 0.188558 0.185059 0.0851905 0.116789 0.249394 0.232215 0.168068 0.184118 0.253035 0.249325 0.11355 0.137461 0.22715 0.330017 0.193446 0.170904 0.254008 0.350286 0.299071 0.160359 0.239886 0.238082 0.134358 0.157213 0.318352 0.289488 0.154572 0.185469 0.32092 0.409464 0.169123 0.132997 0.40964 0.292352 0.19141 0.156075 0.459299 0.354745 0.286019 0.116271 0.335845 0.482511 0.173252 0.105497 0.290023 0.358368 0.18019 0.147664 0.330704 0.309431 0.162019 0.101705 0.545217 0.714595 0.196951 0.179449 0.481435 0.301967 0.0960766 0.220634 0.40766 0.390684 0.333913 0.167502 0.448759 0.28454 0.364671 0.227877 0.445977 0.329829 0.404503 0.234638 0.32106 0.421775 0.374302 0.158366 0.256605 0.209593 0.38027 0.215833 0.282677 0.425492 0.425235 0.1406 0.44243 0.306691 0.421236 0.222376 0.384786 0.393264 0.491248 0.332331 0.613371 0.488885 0.385052 0.188031 0.313849 0.337387 0.350374 0.172789 0.291183 0.314539 0.327504 0.162166 0.274831 0.297902 0.310924 0.1545 0.263036 0.285923 0.29902 0.148998 0.254555 0.277309 0.29047 0.145046 0.248452 0.271109 0.284321 0.142202 0.244056 0.266642 0.279891 0.140153 0.240885 0.263418 0.276696 0.138675 0.238595 0.26109 0.274389 0.137607 0.23694 0.259407
+# PSFS 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 5.65373e-005 0 0 4.68776e-005 4.33844e-005 1.00665e-005 0 0.000228349 0.00116576 0.000141605 3.05205e-005 0.00410583 0.00643948 0.0035753 0.0037034 0.0190478 0.0128677 0.00876093 0.00292114 0.00893407 0.0132269 0.0366956 0.0115796 0.00826269 0.00546573 0.0188619 0.0354271 0.0489024 0.0146183 0.0121905 0.00421654 0.0468988 0.087569 0.0727634 0.031333 0.00702286 0.0468684 0.0299679 0.00584952 0.00953668 0.00967948 0.0173655 0.0135159 0.00811771 0.0226841 0.0253765 0.00981553 0.019715 0.0183877 0.0612681 0.0208246 0.0201363 0.0241243 0.0746488 0.0195734 0.0512901 0.0465226 0.0409038 0.0221449 0.0232492 0.0627658 0.063967 0.0151881 0.0227875 0.0330015 0.0242636 0.019144 0.0358529 0.039991 0.0630301 0.0215264 0.0163945 0.0766352 0.0457434 0.0106462 0.0255138 0.0297588 0.0621901 0.0156643 0.0137829 0.0321967 0.0364127 0.0130641 0.0546532 0.0148292 0.0235877 0.0121813 0.035199 0.0482114 0.0241542 0.0247836 0.0617823 0.0346944 0.0200261 0.0156463 0.0301548 0.0318222 0.0846588 0.0378667 0.0545603 0.0216875 0.105172 0.0194062 0.0342599 0.0357787 0.100241 0.0289518 0.0245999 0.0287984 0.0655782 0.00746658 0.0172004 0.0312495 0.0186974 0.0105402 0.0103705 0.025941 0.0232126 0.00295975 0.0147464 0.0217836 0.0342802 0.00613781 0.0168349 0.0140122 0.00613331 0.00413469 0.00541987 0.00998118 0.020766 0.0106671 0.0115603 0.0170859 0.0161735 0.0117044 0.014369 0.0239825 0.0147296 0.0200415 0.015026 0.0221157 0.0209232 0.00935751 0.00837247 0.022423 0.0128176 0.0163604 0.0125478 0.0200613 0.0115611 0.0149146 0.0115044 0.018465 0.0106945 0.013894 0.0107605 0.0173251 0.0100753 0.0131622 0.0102272 0.0165092 0.00963206 0.012637 0.00984457 0.0159244 0.00931429 0.0122597 0.00956958 0.0155043 0.00908599 0.0119882 0.00937164 0.0152021 0.00892166 0.0117925 0.00922895 0.0149842 0.00880318 0.0116512 0.00912595 0.014827 0.00871764 0.0115492 0.00905153
+# Other 0.0025286 0.00253571 0.00254166 0.00254084 0.00508889 0.00510269 0.00511403 0.00511163 0.00490153 0.00491233 0.00492094 0.00498503 0.00479456 0.00478613 0.00479371 0.00489345 0.00540934 0.00570886 0.0054748 0.00541064 0.00557562 0.00576276 0.00572352 0.00593008 0.00637308 0.00621016 0.00676648 0.0060115 0.00700516 0.00685485 0.00686468 0.00706344 0.00620125 0.00636015 0.00598993 0.00609772 0.00629404 0.00664181 0.00608991 0.00608847 0.00737254 0.00710521 0.00668143 0.00683391 0.00760834 0.00758468 0.00777536 0.00820172 0.0101916 0.00963754 0.00968386 0.0101932 0.0121344 0.012219 0.0119469 0.0122229 0.0130132 0.0129532 0.0128598 0.0133642 0.0132091 0.013291 0.0128687 0.0131338 0.0153412 0.0156625 0.0152329 0.0154219 0.016059 0.0159395 0.0157569 0.0159909 0.0171149 0.0170893 0.0168123 0.0171915 0.0177243 0.0170565 0.0174256 0.0178054 0.0145554 0.0145784 0.0175812 0.0155109 0.0128593 0.0131868 0.0151486 0.0131993 0.0164587 0.0171519 0.0195831 0.0177724 0.0242345 0.0252402 0.0270112 0.024431 0.0320536 0.0317764 0.0334121 0.0316028 0.0264093 0.0277354 0.0303142 0.0275038 0.0289154 0.031167 0.0353758 0.0319244 0.0304342 0.0328341 0.0387049 0.0342781 0.0290536 0.0268439 0.0325444 0.033172 0.0252383 0.0425687 0.0268328 0.0271929 0.03111 0.02905 0.0342357 0.032149 0.030292 0.0280343 0.0587095 0.0311243 0.042988 0.041212 0.0478319 0.0444696 0.0388553 0.0362103 0.045391 0.0409221 0.0390474 0.0350745 0.0452752 0.0476207 0.0436525 0.0383518 0.0442407 0.0461269 0.0382417 0.0489966 0.0592322 0.0547667 0.0679875 0.0673092 0.0688302 0.0766157 0.0788633 0.062295 0.0692246 0.0831352 0.126 0.0648027 0.0821235 0.0880511 0.130536 0.0963007 0.104614 0.0780012 0.111489 0.1011 0.124873 0.128646 0.163065 0.1516 0.136963 0.107007 0.173417 0.173139 0.180068 0.144796 0.170377 0.163686 0.17662 0.177428 0.172219 0.154161 0.168145 0.165565 0.181846 0.164982 0.196152 0.189652 0.222613 0.227191 0.248715 0.242237 0.268279 0.230458 0.23835 0.204994 0.29198 0.227143 0.225136 0.201302 0.250413 0.200903 0.224173 0.211006 0.247275 0.206701 0.249648 0.227626 0.284112 0.180412 0.230129 0.22293 0.30739 0.220109 0.256856 0.257832 0.409251 0.289419 0.321858 0.325005 0.415829 0.343845 0.3441 0.348174 0.442014 0.420753 0.440568 0.51902 0.546164 0.56881 0.60827 0.672936 0.614832 0.567877 0.568296 0.575647 0.588988 0.544037 0.54757 0.57244 0.537577 0.488527 0.492965 0.535082 0.608843 0.558187 0.552593 0.58018 0.666592 0.669795 0.672111 0.703747 0.75574 0.755068 0.748978 0.771934 0.891959 0.682093 0.64174 0.618291 0.725252 0.600704 0.672929 0.603588 0.676875 0.598722 0.600233 0.604663 0.684201 0.534963 0.558995 0.499332 0.605219 0.475745 0.502248 0.451379 0.549623 0.434465 0.462368 0.4175 0.510256 0.405162 0.433905 0.393304 0.482171 0.384252 0.413529 0.37598 0.462079 0.36929 0.398913 0.363549 0.447667 0.358554 0.388405 0.354611 0.437306 0.350833 0.380837 0.348171 0.429843 0.34527 0.375377 0.343524 0.424457 0.341255 0.371434 0.340168
+#
+#_Q_setup for fleets with cpue or survey data
+#_1:  fleet number
+#_2:  link type: (1=simple q, 1 parm; 2=mirror simple q, 1 mirrored parm; 3=q and power, 2 parm; 4=mirror with offset, 2 parm)
+#_3:  extra input for link, i.e. mirror fleet# or dev index number
+#_4:  0/1 to select extra sd parameter
+#_5:  0/1 for biasadj or not
+#_6:  0/1 to float
+#_   fleet      link link_info  extra_se   biasadj     float  #  fleetname
+         5         1         0         0         0         1  #  PL_CPUE
+         6         1         0         0         0         1  #  PSLS_CPUE_LONG
+         7         1         0         0         0         1  #  OTHER_CPUE
+-9999 0 0 0 0 0
+#
+#_Q_parms(if_any);Qunits_are_ln(q)
+#_          LO            HI          INIT         PRIOR         PR_SD       PR_type      PHASE    env-var    use_dev   dev_mnyr   dev_mxyr     dev_PH      Block    Blk_Fxn  #  parm_name
+           -25            25      -10.1657             0             1             0         -1          0          0          0          0          0          0          0  #  LnQ_base_PL_CPUE(5)
+           -25            25      -10.8979             0             1             0         -1          0          0          0          0          0          0          0  #  LnQ_base_PSLS_CPUE_LONG(6)
+           -25            25      -6.93526             0             1             0         -1          0          0          0          0          0          0          0  #  LnQ_base_OTHER_CPUE(7)
+#_no timevary Q parameters
+#
+#_size_selex_patterns
+#Pattern:_0;  parm=0; selex=1.0 for all sizes
+#Pattern:_1;  parm=2; logistic; with 95% width specification
+#Pattern:_5;  parm=2; mirror another size selex; PARMS pick the min-max bin to mirror
+#Pattern:_11; parm=2; selex=1.0  for specified min-max population length bin range
+#Pattern:_15; parm=0; mirror another age or length selex
+#Pattern:_6;  parm=2+special; non-parm len selex
+#Pattern:_43; parm=2+special+2;  like 6, with 2 additional param for scaling (average over bin range)
+#Pattern:_8;  parm=8; double_logistic with smooth transitions and constant above Linf option
+#Pattern:_9;  parm=6; simple 4-parm double logistic with starting length; parm 5 is first length; parm 6=1 does desc as offset
+#Pattern:_21; parm=2+special; non-parm len selex, read as pairs of size, then selex
+#Pattern:_22; parm=4; double_normal as in CASAL
+#Pattern:_23; parm=6; double_normal where final value is directly equal to sp(6) so can be >1.0
+#Pattern:_24; parm=6; double_normal with sel(minL) and sel(maxL), using joiners
+#Pattern:_25; parm=3; exponential-logistic in size
+#Pattern:_27; parm=3+special; cubic spline 
+#Pattern:_42; parm=2+special+3; // like 27, with 2 additional param for scaling (average over bin range)
+#_discard_options:_0=none;_1=define_retention;_2=retention&mortality;_3=all_discarded_dead;_4=define_dome-shaped_retention
+#_Pattern Discard Male Special
+ 27 0 0 7 # 1 PL
+ 27 0 0 5 # 2 PSLS
+ 27 0 0 5 # 3 PSFS
+ 27 0 0 5 # 4 Other
+ 5 0 0 1 # 5 PL_CPUE
+ 5 0 0 2 # 6 PSLS_CPUE_LONG
+ 5 0 0 4 # 7 OTHER_CPUE
+#
+#_age_selex_patterns
+#Pattern:_0; parm=0; selex=1.0 for ages 0 to maxage
+#Pattern:_10; parm=0; selex=1.0 for ages 1 to maxage
+#Pattern:_11; parm=2; selex=1.0  for specified min-max age
+#Pattern:_12; parm=2; age logistic
+#Pattern:_13; parm=8; age double logistic
+#Pattern:_14; parm=nages+1; age empirical
+#Pattern:_15; parm=0; mirror another age or length selex
+#Pattern:_16; parm=2; Coleraine - Gaussian
+#Pattern:_17; parm=nages+1; empirical as random walk  N parameters to read can be overridden by setting special to non-zero
+#Pattern:_41; parm=2+nages+1; // like 17, with 2 additional param for scaling (average over bin range)
+#Pattern:_18; parm=8; double logistic - smooth transition
+#Pattern:_19; parm=6; simple 4-parm double logistic with starting age
+#Pattern:_20; parm=6; double_normal,using joiners
+#Pattern:_26; parm=3; exponential-logistic in age
+#Pattern:_27; parm=3+special; cubic spline in age
+#Pattern:_42; parm=2+special+3; // cubic spline; with 2 additional param for scaling (average over bin range)
+#Age patterns entered with value >100 create Min_selage from first digit and pattern from remainder
+#_Pattern Discard Male Special
+ 11 0 0 0 # 1 PL
+ 11 0 0 0 # 2 PSLS
+ 11 0 0 0 # 3 PSFS
+ 11 0 0 0 # 4 Other
+ 11 0 0 0 # 5 PL_CPUE
+ 11 0 0 0 # 6 PSLS_CPUE_LONG
+ 11 0 0 0 # 7 OTHER_CPUE
+#
+#_          LO            HI          INIT         PRIOR         PR_SD       PR_type      PHASE    env-var    use_dev   dev_mnyr   dev_mxyr     dev_PH      Block    Blk_Fxn  #  parm_name
+# 1   PL LenSelex
+             0             0             0             0             0             0        -99          0          0          0          0        0.5          0          0  #  SizeSpline_Code_PL(1)
+        -0.001             1      0.994239             0         0.001             1          3          0          0          0          0        0.5          0          0  #  SizeSpline_GradLo_PL(1)
+            -1         0.001     -0.620231             0         0.001             1          3          0          0          0          0        0.5          0          0  #  SizeSpline_GradHi_PL(1)
+             1             1       22.6447             0             0             0        -99          0          1       2004       2008         -4          0          0  #  SizeSpline_Knot_1_PL(1)
+             1             1       37.5977             0             0             0        -99          0          1       2004       2008         -4          0          0  #  SizeSpline_Knot_2_PL(1)
+             1             1       42.0377             0             0             0        -99          0          1       2004       2008         -4          0          0  #  SizeSpline_Knot_3_PL(1)
+             1             1        45.702             0             0             0        -99          0          1       2004       2008         -4          0          0  #  SizeSpline_Knot_4_PL(1)
+             1             1       51.7386             0             0             0        -99          0          1       2004       2008         -4          0          0  #  SizeSpline_Knot_5_PL(1)
+             1             1       59.9904             0             0             0        -99          0          1       2004       2008         -4          0          0  #  SizeSpline_Knot_6_PL(1)
+             1             1       71.3145             0             0             0        -99          0          1       2004       2008         -4          0          0  #  SizeSpline_Knot_7_PL(1)
+            -9             7      -7.62272             0         0.001             1          2          0          1       2004       2008         -4          0          0  #  SizeSpline_Val_1_PL(1)
+            -9             7      -2.29147             0         0.001             1          2          0          1       2004       2008         -4          0          0  #  SizeSpline_Val_2_PL(1)
+            -9             7      -1.48143             0         0.001             1          2          0          1       2004       2008         -4          0          0  #  SizeSpline_Val_3_PL(1)
+            -9             7            -1             0             0             0        -99          0          1       2004       2008         -4          0          0  #  SizeSpline_Val_4_PL(1)
+            -9             7      -1.42697             0         0.001             1          2          0          1       2004       2008         -4          0          0  #  SizeSpline_Val_5_PL(1)
+            -9             7      -1.01308             0         0.001             1          2          0          1       2004       2008         -4          0          0  #  SizeSpline_Val_6_PL(1)
+            -9             7     -0.936817             0         0.001             1          2          0          1       2004       2008         -4          0          0  #  SizeSpline_Val_7_PL(1)
+# 2   PSLS LenSelex
+             0             0             0             0             0             0        -99          0          0          0          0        0.5          0          0  #  SizeSpline_Code_PSLS(2)
+        -0.001             1      0.667406             0         0.001             1          3          0          0          0          0        0.5          0          0  #  SizeSpline_GradLo_PSLS(2)
+            -1         0.001     -0.127816             0         0.001             1          3          0          0          0          0        0.5          0          0  #  SizeSpline_GradHi_PSLS(2)
+             1             1        23.125             0             0             0        -99          0          1       2004       2008         -4          0          0  #  SizeSpline_Knot_1_PSLS(2)
+             1             1       41.9035             0             0             0        -99          0          1       2004       2008         -4          0          0  #  SizeSpline_Knot_2_PSLS(2)
+             1             1       45.6322             0             0             0        -99          0          1       2004       2008         -4          0          0  #  SizeSpline_Knot_3_PSLS(2)
+             1             1       50.2975             0             0             0        -99          0          1       2004       2008         -4          0          0  #  SizeSpline_Knot_4_PSLS(2)
+             1             1       70.9228             0             0             0        -99          0          1       2004       2008         -4          0          0  #  SizeSpline_Knot_5_PSLS(2)
+            -9             7       -8.9974             0         0.001             1         -2          0          1       2004       2008         -4          0          0  #  SizeSpline_Val_1_PSLS(2)
+            -9             7      -2.01876             0         0.001             1          2          0          1       2004       2008         -4          0          0  #  SizeSpline_Val_2_PSLS(2)
+            -9             7            -1             0             0             0        -99          0          1       2004       2008         -4          0          0  #  SizeSpline_Val_3_PSLS(2)
+            -9             7      -1.17952             0         0.001             1          2          0          1       2004       2008         -4          0          0  #  SizeSpline_Val_4_PSLS(2)
+            -9             7      -2.86722             0         0.001             1          2          0          1       2004       2008         -4          0          0  #  SizeSpline_Val_5_PSLS(2)
+# 3   PSFS LenSelex
+             0             0             0             0             0             0        -99          0          0          0          0        0.5          0          0  #  SizeSpline_Code_PSFS(3)
+        -0.001             1      0.123403             0         0.001             1          3          0          0          0          0        0.5          0          0  #  SizeSpline_GradLo_PSFS(3)
+            -1         0.001     -0.317335             0         0.001             1          3          0          0          0          0        0.5          0          0  #  SizeSpline_GradHi_PSFS(3)
+             1             1       23.1313             0             0             0        -99          0          1       2004       2008         -4          0          0  #  SizeSpline_Knot_1_PSFS(3)
+             1             1       44.1442             0             0             0        -99          0          1       2004       2008         -4          0          0  #  SizeSpline_Knot_2_PSFS(3)
+             1             1       48.4634             0             0             0        -99          0          1       2004       2008         -4          0          0  #  SizeSpline_Knot_3_PSFS(3)
+             1             1       54.7779             0             0             0        -99          0          1       2004       2008         -4          0          0  #  SizeSpline_Knot_4_PSFS(3)
+             1             1       71.2972             0             0             0        -99          0          1       2004       2008         -4          0          0  #  SizeSpline_Knot_5_PSFS(3)
+            -9             7      -8.99994             0         0.001             1         -2          0          1       2004       2008         -4          0          0  #  SizeSpline_Val_1_PSFS(3)
+            -9             7        -1.833             0         0.001             1          2          0          1       2004       2008         -4          0          0  #  SizeSpline_Val_2_PSFS(3)
+            -9             7            -1             0             0             0        -99          0          1       2004       2008         -4          0          0  #  SizeSpline_Val_3_PSFS(3)
+            -9             7        -1.387             0         0.001             1          2          0          1       2004       2008         -4          0          0  #  SizeSpline_Val_4_PSFS(3)
+            -9             7      -1.91086             0         0.001             1          2          0          1       2004       2008         -4          0          0  #  SizeSpline_Val_5_PSFS(3)
+# 4   Other LenSelex
+             0             0             0             0             0             0        -99          0          0          0          0        0.5          0          0  #  SizeSpline_Code_Other(4)
+        -0.001             1      0.135814             0         0.001             1          3          0          0          0          0        0.5          0          0  #  SizeSpline_GradLo_Other(4)
+            -1         0.001     -0.181275             0         0.001             1          3          0          0          0          0        0.5          0          0  #  SizeSpline_GradHi_Other(4)
+             1             1       22.5552             0             0             0        -99          0          1       2004       2008         -4          0          0  #  SizeSpline_Knot_1_Other(4)
+             1             1       44.2844             0             0             0        -99          0          1       2004       2008         -4          0          0  #  SizeSpline_Knot_2_Other(4)
+             1             1       51.4468             0             0             0        -99          0          1       2004       2008         -4          0          0  #  SizeSpline_Knot_3_Other(4)
+             1             1       58.8149             0             0             0        -99          0          1       2004       2008         -4          0          0  #  SizeSpline_Knot_4_Other(4)
+             1             1       72.4351             0             0             0        -99          0          1       2004       2008         -4          0          0  #  SizeSpline_Knot_5_Other(4)
+            -9             7       -5.4116             0         0.001             1          2          0          1       2004       2008         -4          0          0  #  SizeSpline_Val_1_Other(4)
+            -9             7      -1.84728             0         0.001             1          2          0          1       2004       2008         -4          0          0  #  SizeSpline_Val_2_Other(4)
+            -9             7            -1             0             0             0        -99          0          1       2004       2008         -4          0          0  #  SizeSpline_Val_3_Other(4)
+            -9             7     -0.743981             0         0.001             1          2          0          1       2004       2008         -4          0          0  #  SizeSpline_Val_4_Other(4)
+            -9             7     -0.712426             0         0.001             1          2          0          1       2004       2008         -4          0          0  #  SizeSpline_Val_5_Other(4)
+# 5   PL_CPUE LenSelex
+             1             1             1             1            99             1         -3          0          0          0          0        0.5          0          0  #  SizeSel_P1_PL_CPUE(5)
+            22            22            22            22            99             1         -3          0          0          0          0        0.5          0          0  #  SizeSel_P2_PL_CPUE(5)
+# 6   PSLS_CPUE_LONG LenSelex
+             3             3             3             3            99             3         -3          0          0          0          0        0.5          0          0  #  SizeSel_P1_PSLS_CPUE_LONG(6)
+            22            22            22            22            99             1         -3          0          0          0          0        0.5          0          0  #  SizeSel_P2_PSLS_CPUE_LONG(6)
+# 7   OTHER_CPUE LenSelex
+             3             3             3             3            99             3         -3          0          0          0          0        0.5          0          0  #  SizeSel_P1_OTHER_CPUE(7)
+            22            22            22            22            99             1         -3          0          0          0          0        0.5          0          0  #  SizeSel_P2_OTHER_CPUE(7)
+# 1   PL AgeSelex
+             0             8             0             5            99             0         -1          0          0          0          0          0          0          0  #  AgeSel_P1_PL(1)
+             0             8             8             5            99             0         -1          0          0          0          0          0          0          0  #  AgeSel_P2_PL(1)
+# 2   PSLS AgeSelex
+             0             8             0             5            99             0         -1          0          0          0          0          0          0          0  #  AgeSel_P1_PSLS(2)
+             0             8             8             5            99             0         -1          0          0          0          0          0          0          0  #  AgeSel_P2_PSLS(2)
+# 3   PSFS AgeSelex
+             0             8             0             5            99             0         -1          0          0          0          0          0          0          0  #  AgeSel_P1_PSFS(3)
+             0             8             8             5            99             0         -1          0          0          0          0          0          0          0  #  AgeSel_P2_PSFS(3)
+# 4   Other AgeSelex
+             0             8             0             5            99             0         -1          0          0          0          0          0          0          0  #  AgeSel_P1_Other(4)
+             0             8             8             5            99             0         -1          0          0          0          0          0          0          0  #  AgeSel_P2_Other(4)
+# 5   PL_CPUE AgeSelex
+             0             8             0             5            99             0         -1          0          0          0          0          0          0          0  #  AgeSel_P1_PL_CPUE(5)
+             0             8             8             5            99             0         -1          0          0          0          0          0          0          0  #  AgeSel_P2_PL_CPUE(5)
+# 6   PSLS_CPUE_LONG AgeSelex
+             0             8             0             5            99             0         -1          0          0          0          0          0          0          0  #  AgeSel_P1_PSLS_CPUE_LONG(6)
+             0             8             8             5            99             0         -1          0          0          0          0          0          0          0  #  AgeSel_P2_PSLS_CPUE_LONG(6)
+# 7   OTHER_CPUE AgeSelex
+             0             8             0             5            99             0         -1          0          0          0          0          0          0          0  #  AgeSel_P1_OTHER_CPUE(7)
+             0             8             8             5            99             0         -1          0          0          0          0          0          0          0  #  AgeSel_P2_OTHER_CPUE(7)
+# timevary selex parameters 
+#_          LO            HI          INIT         PRIOR         PR_SD       PR_type    PHASE  #  parm_name
+        0.0001             2          0.05          0.05           0.5             6      -5  # SizeSpline_Knot_1_PL(1)_dev_se
+         -0.99          0.99             0             0           0.5             6      -6  # SizeSpline_Knot_1_PL(1)_dev_autocorr
+        0.0001             2          0.05          0.05           0.5             6      -5  # SizeSpline_Knot_2_PL(1)_dev_se
+         -0.99          0.99             0             0           0.5             6      -6  # SizeSpline_Knot_2_PL(1)_dev_autocorr
+        0.0001             2          0.05          0.05           0.5             6      -5  # SizeSpline_Knot_3_PL(1)_dev_se
+         -0.99          0.99             0             0           0.5             6      -6  # SizeSpline_Knot_3_PL(1)_dev_autocorr
+        0.0001             2          0.05          0.05           0.5             6      -5  # SizeSpline_Knot_4_PL(1)_dev_se
+         -0.99          0.99             0             0           0.5             6      -6  # SizeSpline_Knot_4_PL(1)_dev_autocorr
+        0.0001             2          0.05          0.05           0.5             6      -5  # SizeSpline_Knot_5_PL(1)_dev_se
+         -0.99          0.99             0             0           0.5             6      -6  # SizeSpline_Knot_5_PL(1)_dev_autocorr
+        0.0001             2          0.05          0.05           0.5             6      -5  # SizeSpline_Knot_6_PL(1)_dev_se
+         -0.99          0.99             0             0           0.5             6      -6  # SizeSpline_Knot_6_PL(1)_dev_autocorr
+        0.0001             2          0.05          0.05           0.5             6      -5  # SizeSpline_Knot_7_PL(1)_dev_se
+         -0.99          0.99             0             0           0.5             6      -6  # SizeSpline_Knot_7_PL(1)_dev_autocorr
+        0.0001             2          0.05          0.05           0.5             6      -5  # SizeSpline_Val_1_PL(1)_dev_se
+         -0.99          0.99             0             0           0.5             6      -6  # SizeSpline_Val_1_PL(1)_dev_autocorr
+        0.0001             2          0.05          0.05           0.5             6      -5  # SizeSpline_Val_2_PL(1)_dev_se
+         -0.99          0.99             0             0           0.5             6      -6  # SizeSpline_Val_2_PL(1)_dev_autocorr
+        0.0001             2          0.05          0.05           0.5             6      -5  # SizeSpline_Val_3_PL(1)_dev_se
+         -0.99          0.99             0             0           0.5             6      -6  # SizeSpline_Val_3_PL(1)_dev_autocorr
+        0.0001             2          0.05          0.05           0.5             6      -5  # SizeSpline_Val_4_PL(1)_dev_se
+         -0.99          0.99             0             0           0.5             6      -6  # SizeSpline_Val_4_PL(1)_dev_autocorr
+        0.0001             2          0.05          0.05           0.5             6      -5  # SizeSpline_Val_5_PL(1)_dev_se
+         -0.99          0.99             0             0           0.5             6      -6  # SizeSpline_Val_5_PL(1)_dev_autocorr
+        0.0001             2          0.05          0.05           0.5             6      -5  # SizeSpline_Val_6_PL(1)_dev_se
+         -0.99          0.99             0             0           0.5             6      -6  # SizeSpline_Val_6_PL(1)_dev_autocorr
+        0.0001             2          0.05          0.05           0.5             6      -5  # SizeSpline_Val_7_PL(1)_dev_se
+         -0.99          0.99             0             0           0.5             6      -6  # SizeSpline_Val_7_PL(1)_dev_autocorr
+        0.0001             2          0.05          0.05           0.5             6      -5  # SizeSpline_Knot_1_PSLS(2)_dev_se
+         -0.99          0.99             0             0           0.5             6      -6  # SizeSpline_Knot_1_PSLS(2)_dev_autocorr
+        0.0001             2          0.05          0.05           0.5             6      -5  # SizeSpline_Knot_2_PSLS(2)_dev_se
+         -0.99          0.99             0             0           0.5             6      -6  # SizeSpline_Knot_2_PSLS(2)_dev_autocorr
+        0.0001             2          0.05          0.05           0.5             6      -5  # SizeSpline_Knot_3_PSLS(2)_dev_se
+         -0.99          0.99             0             0           0.5             6      -6  # SizeSpline_Knot_3_PSLS(2)_dev_autocorr
+        0.0001             2          0.05          0.05           0.5             6      -5  # SizeSpline_Knot_4_PSLS(2)_dev_se
+         -0.99          0.99             0             0           0.5             6      -6  # SizeSpline_Knot_4_PSLS(2)_dev_autocorr
+        0.0001             2          0.05          0.05           0.5             6      -5  # SizeSpline_Knot_5_PSLS(2)_dev_se
+         -0.99          0.99             0             0           0.5             6      -6  # SizeSpline_Knot_5_PSLS(2)_dev_autocorr
+        0.0001             2          0.05          0.05           0.5             6      -5  # SizeSpline_Val_1_PSLS(2)_dev_se
+         -0.99          0.99             0             0           0.5             6      -6  # SizeSpline_Val_1_PSLS(2)_dev_autocorr
+        0.0001             2          0.05          0.05           0.5             6      -5  # SizeSpline_Val_2_PSLS(2)_dev_se
+         -0.99          0.99             0             0           0.5             6      -6  # SizeSpline_Val_2_PSLS(2)_dev_autocorr
+        0.0001             2          0.05          0.05           0.5             6      -5  # SizeSpline_Val_3_PSLS(2)_dev_se
+         -0.99          0.99             0             0           0.5             6      -6  # SizeSpline_Val_3_PSLS(2)_dev_autocorr
+        0.0001             2          0.05          0.05           0.5             6      -5  # SizeSpline_Val_4_PSLS(2)_dev_se
+         -0.99          0.99             0             0           0.5             6      -6  # SizeSpline_Val_4_PSLS(2)_dev_autocorr
+        0.0001             2          0.05          0.05           0.5             6      -5  # SizeSpline_Val_5_PSLS(2)_dev_se
+         -0.99          0.99             0             0           0.5             6      -6  # SizeSpline_Val_5_PSLS(2)_dev_autocorr
+        0.0001             2          0.05          0.05           0.5             6      -5  # SizeSpline_Knot_1_PSFS(3)_dev_se
+         -0.99          0.99             0             0           0.5             6      -6  # SizeSpline_Knot_1_PSFS(3)_dev_autocorr
+        0.0001             2          0.05          0.05           0.5             6      -5  # SizeSpline_Knot_2_PSFS(3)_dev_se
+         -0.99          0.99             0             0           0.5             6      -6  # SizeSpline_Knot_2_PSFS(3)_dev_autocorr
+        0.0001             2          0.05          0.05           0.5             6      -5  # SizeSpline_Knot_3_PSFS(3)_dev_se
+         -0.99          0.99             0             0           0.5             6      -6  # SizeSpline_Knot_3_PSFS(3)_dev_autocorr
+        0.0001             2          0.05          0.05           0.5             6      -5  # SizeSpline_Knot_4_PSFS(3)_dev_se
+         -0.99          0.99             0             0           0.5             6      -6  # SizeSpline_Knot_4_PSFS(3)_dev_autocorr
+        0.0001             2          0.05          0.05           0.5             6      -5  # SizeSpline_Knot_5_PSFS(3)_dev_se
+         -0.99          0.99             0             0           0.5             6      -6  # SizeSpline_Knot_5_PSFS(3)_dev_autocorr
+        0.0001             2          0.05          0.05           0.5             6      -5  # SizeSpline_Val_1_PSFS(3)_dev_se
+         -0.99          0.99             0             0           0.5             6      -6  # SizeSpline_Val_1_PSFS(3)_dev_autocorr
+        0.0001             2          0.05          0.05           0.5             6      -5  # SizeSpline_Val_2_PSFS(3)_dev_se
+         -0.99          0.99             0             0           0.5             6      -6  # SizeSpline_Val_2_PSFS(3)_dev_autocorr
+        0.0001             2          0.05          0.05           0.5             6      -5  # SizeSpline_Val_3_PSFS(3)_dev_se
+         -0.99          0.99             0             0           0.5             6      -6  # SizeSpline_Val_3_PSFS(3)_dev_autocorr
+        0.0001             2          0.05          0.05           0.5             6      -5  # SizeSpline_Val_4_PSFS(3)_dev_se
+         -0.99          0.99             0             0           0.5             6      -6  # SizeSpline_Val_4_PSFS(3)_dev_autocorr
+        0.0001             2          0.05          0.05           0.5             6      -5  # SizeSpline_Val_5_PSFS(3)_dev_se
+         -0.99          0.99             0             0           0.5             6      -6  # SizeSpline_Val_5_PSFS(3)_dev_autocorr
+        0.0001             2          0.05          0.05           0.5             6      -5  # SizeSpline_Knot_1_Other(4)_dev_se
+         -0.99          0.99             0             0           0.5             6      -6  # SizeSpline_Knot_1_Other(4)_dev_autocorr
+        0.0001             2          0.05          0.05           0.5             6      -5  # SizeSpline_Knot_2_Other(4)_dev_se
+         -0.99          0.99             0             0           0.5             6      -6  # SizeSpline_Knot_2_Other(4)_dev_autocorr
+        0.0001             2          0.05          0.05           0.5             6      -5  # SizeSpline_Knot_3_Other(4)_dev_se
+         -0.99          0.99             0             0           0.5             6      -6  # SizeSpline_Knot_3_Other(4)_dev_autocorr
+        0.0001             2          0.05          0.05           0.5             6      -5  # SizeSpline_Knot_4_Other(4)_dev_se
+         -0.99          0.99             0             0           0.5             6      -6  # SizeSpline_Knot_4_Other(4)_dev_autocorr
+        0.0001             2          0.05          0.05           0.5             6      -5  # SizeSpline_Knot_5_Other(4)_dev_se
+         -0.99          0.99             0             0           0.5             6      -6  # SizeSpline_Knot_5_Other(4)_dev_autocorr
+        0.0001             2          0.05          0.05           0.5             6      -5  # SizeSpline_Val_1_Other(4)_dev_se
+         -0.99          0.99             0             0           0.5             6      -6  # SizeSpline_Val_1_Other(4)_dev_autocorr
+        0.0001             2          0.05          0.05           0.5             6      -5  # SizeSpline_Val_2_Other(4)_dev_se
+         -0.99          0.99             0             0           0.5             6      -6  # SizeSpline_Val_2_Other(4)_dev_autocorr
+        0.0001             2          0.05          0.05           0.5             6      -5  # SizeSpline_Val_3_Other(4)_dev_se
+         -0.99          0.99             0             0           0.5             6      -6  # SizeSpline_Val_3_Other(4)_dev_autocorr
+        0.0001             2          0.05          0.05           0.5             6      -5  # SizeSpline_Val_4_Other(4)_dev_se
+         -0.99          0.99             0             0           0.5             6      -6  # SizeSpline_Val_4_Other(4)_dev_autocorr
+        0.0001             2          0.05          0.05           0.5             6      -5  # SizeSpline_Val_5_Other(4)_dev_se
+         -0.99          0.99             0             0           0.5             6      -6  # SizeSpline_Val_5_Other(4)_dev_autocorr
+# info on dev vectors created for selex parms are reported with other devs after tag parameter section 
+#
+0   #  use 2D_AR1 selectivity(0/1)
+#_no 2D_AR1 selex offset used
+#
+# Tag loss and Tag reporting parameters go next
+1 # TG_custom:  0=no read and autogen if tag data exist; 1=read
+#_Note -  tag parameters cannot be time-varying
+#_Note -  phase=-1000 sets parm value to previous parm; phase=-100X sets to parm(X) value
+ -15 10 -10  -10 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_init_1
+ -15 10 -10  -10 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_init_2
+ -15 10 -10  -10 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_init_3
+ -15 10 -10  -10 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_init_4
+ -15 10 -10  -10 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_init_5
+ -15 10 -10  -10 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_init_6
+ -15 10 -10  -10 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_init_7
+ -15 10 -10  -10 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_init_8
+ -15 10 -10  -10 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_init_9
+ -15 10 -10  -10 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_init_10
+ -15 10 -10  -10 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_init_11
+ -15 10 -10  -10 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_init_12
+ -15 10 -10  -10 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_init_13
+ -15 10 -10  -10 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_init_14
+ -15 10 -10  -10 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_init_15
+ -15 10 -10  -10 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_init_16
+ -15 10 -10  -10 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_init_17
+ -15 10 -10  -10 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_init_18
+ -15 10 -10  -10 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_init_19
+ -15 10 -10  -10 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_init_20
+ -15 10 -10  -10 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_init_21
+ -15 10 -10  -10 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_init_22
+ -15 10 -10  -10 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_init_23
+ -15 10 -10  -10 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_init_24
+ -15 10 -10  -10 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_init_25
+ -15 10 -10  -10 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_init_26
+ -15 10 -10  -10 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_init_27
+ -15 10 -10  -10 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_init_28
+ -15 10 -10  -10 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_init_29
+ -15 10 -10  -10 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_init_30
+ -15 10 -10  -10 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_init_31
+ -15 10 -10  -10 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_init_32
+ -15 10 -10  -10 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_init_33
+ -15 10 -10  -10 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_init_34
+ -15 10 -10  -10 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_init_35
+ -15 10 -10  -10 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_init_36
+ -15 10 -10  -10 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_init_37
+ -15 10 -10  -10 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_init_38
+ -15 10 -10  -10 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_init_39
+ -15 10 -10  -10 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_init_40
+ -15 10 -10  -10 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_init_41
+ -15 10 -10  -10 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_init_42
+ -15 10 -10  -10 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_init_43
+ -15 10 -10  -10 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_init_44
+ -15 10 -10  -10 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_init_45
+ -15 10 -10  -10 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_init_46
+ -15 10 -10  -10 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_init_47
+ -15 10 -10  -10 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_init_48
+ -15 10 -10  -10 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_init_49
+ -15 10 -4.185  -4.185 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_chronic_1
+ -15 10 -4.185  -4.185 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_chronic_2
+ -15 10 -4.185  -4.185 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_chronic_3
+ -15 10 -4.185  -4.185 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_chronic_4
+ -15 10 -4.185  -4.185 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_chronic_5
+ -15 10 -4.185  -4.185 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_chronic_6
+ -15 10 -4.185  -4.185 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_chronic_7
+ -15 10 -4.185  -4.185 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_chronic_8
+ -15 10 -4.185  -4.185 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_chronic_9
+ -15 10 -4.185  -4.185 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_chronic_10
+ -15 10 -4.185  -4.185 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_chronic_11
+ -15 10 -4.185  -4.185 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_chronic_12
+ -15 10 -4.185  -4.185 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_chronic_13
+ -15 10 -4.185  -4.185 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_chronic_14
+ -15 10 -4.185  -4.185 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_chronic_15
+ -15 10 -4.185  -4.185 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_chronic_16
+ -15 10 -4.185  -4.185 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_chronic_17
+ -15 10 -4.185  -4.185 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_chronic_18
+ -15 10 -4.185  -4.185 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_chronic_19
+ -15 10 -4.185  -4.185 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_chronic_20
+ -15 10 -4.185  -4.185 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_chronic_21
+ -15 10 -4.185  -4.185 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_chronic_22
+ -15 10 -4.185  -4.185 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_chronic_23
+ -15 10 -4.185  -4.185 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_chronic_24
+ -15 10 -4.185  -4.185 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_chronic_25
+ -15 10 -4.185  -4.185 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_chronic_26
+ -15 10 -4.185  -4.185 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_chronic_27
+ -15 10 -4.185  -4.185 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_chronic_28
+ -15 10 -4.185  -4.185 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_chronic_29
+ -15 10 -4.185  -4.185 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_chronic_30
+ -15 10 -4.185  -4.185 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_chronic_31
+ -15 10 -4.185  -4.185 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_chronic_32
+ -15 10 -4.185  -4.185 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_chronic_33
+ -15 10 -4.185  -4.185 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_chronic_34
+ -15 10 -4.185  -4.185 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_chronic_35
+ -15 10 -4.185  -4.185 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_chronic_36
+ -15 10 -4.185  -4.185 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_chronic_37
+ -15 10 -4.185  -4.185 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_chronic_38
+ -15 10 -4.185  -4.185 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_chronic_39
+ -15 10 -4.185  -4.185 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_chronic_40
+ -15 10 -4.185  -4.185 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_chronic_41
+ -15 10 -4.185  -4.185 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_chronic_42
+ -15 10 -4.185  -4.185 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_chronic_43
+ -15 10 -4.185  -4.185 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_chronic_44
+ -15 10 -4.185  -4.185 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_chronic_45
+ -15 10 -4.185  -4.185 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_chronic_46
+ -15 10 -4.185  -4.185 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_chronic_47
+ -15 10 -4.185  -4.185 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_chronic_48
+ -15 10 -4.185  -4.185 0.001 1 -4 0 0 0 0 0 0 0 # TG_loss_chronic_49
+ 1 150 20  20 0.001 1 -4 0 0 0 0 0 0 0 # TG_overdispersion_1
+ 1 150 20  20 0.001 1 -4 0 0 0 0 0 0 0 # TG_overdispersion_2
+ 1 150 20  20 0.001 1 -4 0 0 0 0 0 0 0 # TG_overdispersion_3
+ 1 150 20  20 0.001 1 -4 0 0 0 0 0 0 0 # TG_overdispersion_4
+ 1 150 20  20 0.001 1 -4 0 0 0 0 0 0 0 # TG_overdispersion_5
+ 1 150 20  20 0.001 1 -4 0 0 0 0 0 0 0 # TG_overdispersion_6
+ 1 150 20  20 0.001 1 -4 0 0 0 0 0 0 0 # TG_overdispersion_7
+ 1 150 20  20 0.001 1 -4 0 0 0 0 0 0 0 # TG_overdispersion_8
+ 1 150 20  20 0.001 1 -4 0 0 0 0 0 0 0 # TG_overdispersion_9
+ 1 150 20  20 0.001 1 -4 0 0 0 0 0 0 0 # TG_overdispersion_10
+ 1 150 20  20 0.001 1 -4 0 0 0 0 0 0 0 # TG_overdispersion_11
+ 1 150 20  20 0.001 1 -4 0 0 0 0 0 0 0 # TG_overdispersion_12
+ 1 150 20  20 0.001 1 -4 0 0 0 0 0 0 0 # TG_overdispersion_13
+ 1 150 20  20 0.001 1 -4 0 0 0 0 0 0 0 # TG_overdispersion_14
+ 1 150 20  20 0.001 1 -4 0 0 0 0 0 0 0 # TG_overdispersion_15
+ 1 150 20  20 0.001 1 -4 0 0 0 0 0 0 0 # TG_overdispersion_16
+ 1 150 20  20 0.001 1 -4 0 0 0 0 0 0 0 # TG_overdispersion_17
+ 1 150 20  20 0.001 1 -4 0 0 0 0 0 0 0 # TG_overdispersion_18
+ 1 150 20  20 0.001 1 -4 0 0 0 0 0 0 0 # TG_overdispersion_19
+ 1 150 20  20 0.001 1 -4 0 0 0 0 0 0 0 # TG_overdispersion_20
+ 1 150 20  20 0.001 1 -4 0 0 0 0 0 0 0 # TG_overdispersion_21
+ 1 150 20  20 0.001 1 -4 0 0 0 0 0 0 0 # TG_overdispersion_22
+ 1 150 20  20 0.001 1 -4 0 0 0 0 0 0 0 # TG_overdispersion_23
+ 1 150 20  20 0.001 1 -4 0 0 0 0 0 0 0 # TG_overdispersion_24
+ 1 150 20  20 0.001 1 -4 0 0 0 0 0 0 0 # TG_overdispersion_25
+ 1 150 20  20 0.001 1 -4 0 0 0 0 0 0 0 # TG_overdispersion_26
+ 1 150 20  20 0.001 1 -4 0 0 0 0 0 0 0 # TG_overdispersion_27
+ 1 150 20  20 0.001 1 -4 0 0 0 0 0 0 0 # TG_overdispersion_28
+ 1 150 20  20 0.001 1 -4 0 0 0 0 0 0 0 # TG_overdispersion_29
+ 1 150 20  20 0.001 1 -4 0 0 0 0 0 0 0 # TG_overdispersion_30
+ 1 150 20  20 0.001 1 -4 0 0 0 0 0 0 0 # TG_overdispersion_31
+ 1 150 20  20 0.001 1 -4 0 0 0 0 0 0 0 # TG_overdispersion_32
+ 1 150 20  20 0.001 1 -4 0 0 0 0 0 0 0 # TG_overdispersion_33
+ 1 150 20  20 0.001 1 -4 0 0 0 0 0 0 0 # TG_overdispersion_34
+ 1 150 20  20 0.001 1 -4 0 0 0 0 0 0 0 # TG_overdispersion_35
+ 1 150 20  20 0.001 1 -4 0 0 0 0 0 0 0 # TG_overdispersion_36
+ 1 150 20  20 0.001 1 -4 0 0 0 0 0 0 0 # TG_overdispersion_37
+ 1 150 20  20 0.001 1 -4 0 0 0 0 0 0 0 # TG_overdispersion_38
+ 1 150 20  20 0.001 1 -4 0 0 0 0 0 0 0 # TG_overdispersion_39
+ 1 150 20  20 0.001 1 -4 0 0 0 0 0 0 0 # TG_overdispersion_40
+ 1 150 20  20 0.001 1 -4 0 0 0 0 0 0 0 # TG_overdispersion_41
+ 1 150 20  20 0.001 1 -4 0 0 0 0 0 0 0 # TG_overdispersion_42
+ 1 150 20  20 0.001 1 -4 0 0 0 0 0 0 0 # TG_overdispersion_43
+ 1 150 20  20 0.001 1 -4 0 0 0 0 0 0 0 # TG_overdispersion_44
+ 1 150 20  20 0.001 1 -4 0 0 0 0 0 0 0 # TG_overdispersion_45
+ 1 150 20  20 0.001 1 -4 0 0 0 0 0 0 0 # TG_overdispersion_46
+ 1 150 20  20 0.001 1 -4 0 0 0 0 0 0 0 # TG_overdispersion_47
+ 1 150 20  20 0.001 1 -4 0 0 0 0 0 0 0 # TG_overdispersion_48
+ 1 150 20  20 0.001 1 -4 0 0 0 0 0 0 0 # TG_overdispersion_49
+ -20 20 -6.09804  0 99 1 1 0 0 0 0 0 0 0 # TG_report_fleet:_1
+ -20 20 10  10 0.2 1 -4 0 0 0 0 0 0 0 # TG_report_fleet:_2
+ -20 20 10  10 0.2 1 -4 0 0 0 0 0 0 0 # TG_report_fleet:_3
+ -20 20 -10  -10 2 1 -4 0 0 0 0 0 0 0 # TG_report_fleet:_4
+ -4 0 0  0 2 6 -4 0 0 0 0 0 0 0 # TG_rpt_decay_fleet:_1
+ -4 0 0  0 2 6 -4 0 0 0 0 0 0 0 # TG_rpt_decay_fleet:_2
+ -4 0 0  0 2 6 -4 0 0 0 0 0 0 0 # TG_rpt_decay_fleet:_3
+ -4 0 0  0 2 6 -4 0 0 0 0 0 0 0 # TG_rpt_decay_fleet:_4
+#
+# deviation vectors for timevary parameters
+#  base   base first block   block  env  env   dev   dev   dev   dev   dev
+#  type  index  parm trend pattern link  var  vectr link _mnyr  mxyr phase  dev_vector
+#      1    21     1     0     0     2     0     1     1  1983  2015     5 -0.000962945 0.0357177 0.00217173 -0.00875698 0.0404131 0.0367116 0.128383 -0.017687 0.212843 0.00693445 -0.00178842 0.100599 -0.0761227 -0.0254758 0.117634 -0.0166279 0.130843 0.0437726 -0.206346 0.0927839 -0.043882 -0.169433 0.00739304 0.0094149 0.0935596 0.350106 -0.0530996 -0.0277104 0.191375 0.0854053 0.0674693 -0.0199248 0.0101219
+#      1    22     3     0     0     2     0     2     1  1983  2015     5 -2.24755e-005 0.000101837 -0.000234054 -0.000508598 0.000414022 -0.000679175 0.000532448 0.00093194 -0.00228796 0.00155994 0.000302345 -0.00125413 0.00137124 -0.000753742 0.0010831 0.00402674 -0.00031473 0.000201328 0.00379499 -0.00355568 0.000116482 0.00100152 -0.00219413 -0.000796606 -0.00195446 -0.00201096 0.00227317 -0.00237321 -0.00309183 0.00177993 0.00131479 -0.000853545 0.00141285
+#      1    23     5     0     0     2     0     3     1  1983  2015     5 -0.00903908 0.0370143 0.0225702 -0.0182832 0.0251767 0.103161 0.0921286 -0.101727 0.351113 -0.0244144 -0.0460526 0.2519 -0.161078 0.115592 0.151759 -0.16402 0.275094 -0.0251815 -0.263068 0.114059 -0.0693069 -0.220812 0.161273 -0.00213659 0.132875 0.518572 -0.183099 0.0197462 0.222373 0.140556 -0.0381898 0.0878432 0.0483972
+#      5     4     7     0     0     2     0     4     1  2004  2008    -4      0      0      0      0      0
+#      5     5     9     0     0     2     0     5     1  2004  2008    -4      0      0      0      0      0
+#      5     6    11     0     0     2     0     6     1  2004  2008    -4      0      0      0      0      0
+#      5     7    13     0     0     2     0     7     1  2004  2008    -4      0      0      0      0      0
+#      5     8    15     0     0     2     0     8     1  2004  2008    -4      0      0      0      0      0
+#      5     9    17     0     0     2     0     9     1  2004  2008    -4      0      0      0      0      0
+#      5    10    19     0     0     2     0    10     1  2004  2008    -4      0      0      0      0      0
+#      5    11    21     0     0     2     0    11     1  2004  2008    -4      0      0      0      0      0
+#      5    12    23     0     0     2     0    12     1  2004  2008    -4      0      0      0      0      0
+#      5    13    25     0     0     2     0    13     1  2004  2008    -4      0      0      0      0      0
+#      5    14    27     0     0     2     0    14     1  2004  2008    -4      0      0      0      0      0
+#      5    15    29     0     0     2     0    15     1  2004  2008    -4      0      0      0      0      0
+#      5    16    31     0     0     2     0    16     1  2004  2008    -4      0      0      0      0      0
+#      5    17    33     0     0     2     0    17     1  2004  2008    -4      0      0      0      0      0
+#      5    21    35     0     0     2     0    18     1  2004  2008    -4      0      0      0      0      0
+#      5    22    37     0     0     2     0    19     1  2004  2008    -4      0      0      0      0      0
+#      5    23    39     0     0     2     0    20     1  2004  2008    -4      0      0      0      0      0
+#      5    24    41     0     0     2     0    21     1  2004  2008    -4      0      0      0      0      0
+#      5    25    43     0     0     2     0    22     1  2004  2008    -4      0      0      0      0      0
+#      5    26    45     0     0     2     0    23     1  2004  2008    -4      0      0      0      0      0
+#      5    27    47     0     0     2     0    24     1  2004  2008    -4      0      0      0      0      0
+#      5    28    49     0     0     2     0    25     1  2004  2008    -4      0      0      0      0      0
+#      5    29    51     0     0     2     0    26     1  2004  2008    -4      0      0      0      0      0
+#      5    30    53     0     0     2     0    27     1  2004  2008    -4      0      0      0      0      0
+#      5    34    55     0     0     2     0    28     1  2004  2008    -4      0      0      0      0      0
+#      5    35    57     0     0     2     0    29     1  2004  2008    -4      0      0      0      0      0
+#      5    36    59     0     0     2     0    30     1  2004  2008    -4      0      0      0      0      0
+#      5    37    61     0     0     2     0    31     1  2004  2008    -4      0      0      0      0      0
+#      5    38    63     0     0     2     0    32     1  2004  2008    -4      0      0      0      0      0
+#      5    39    65     0     0     2     0    33     1  2004  2008    -4      0      0      0      0      0
+#      5    40    67     0     0     2     0    34     1  2004  2008    -4      0      0      0      0      0
+#      5    41    69     0     0     2     0    35     1  2004  2008    -4      0      0      0      0      0
+#      5    42    71     0     0     2     0    36     1  2004  2008    -4      0      0      0      0      0
+#      5    43    73     0     0     2     0    37     1  2004  2008    -4      0      0      0      0      0
+#      5    47    75     0     0     2     0    38     1  2004  2008    -4      0      0      0      0      0
+#      5    48    77     0     0     2     0    39     1  2004  2008    -4      0      0      0      0      0
+#      5    49    79     0     0     2     0    40     1  2004  2008    -4      0      0      0      0      0
+#      5    50    81     0     0     2     0    41     1  2004  2008    -4      0      0      0      0      0
+#      5    51    83     0     0     2     0    42     1  2004  2008    -4      0      0      0      0      0
+#      5    52    85     0     0     2     0    43     1  2004  2008    -4      0      0      0      0      0
+#      5    53    87     0     0     2     0    44     1  2004  2008    -4      0      0      0      0      0
+#      5    54    89     0     0     2     0    45     1  2004  2008    -4      0      0      0      0      0
+#      5    55    91     0     0     2     0    46     1  2004  2008    -4      0      0      0      0      0
+#      5    56    93     0     0     2     0    47     1  2004  2008    -4      0      0      0      0      0
+     #
+# Input variance adjustments factors: 
+ #_1=add_to_survey_CV
+ #_2=add_to_discard_stddev
+ #_3=add_to_bodywt_CV
+ #_4=mult_by_lencomp_N
+ #_5=mult_by_agecomp_N
+ #_6=mult_by_size-at-age_N
+ #_7=mult_by_generalized_sizecomp
+#_Factor  Fleet  Value
+      4      1      0.05
+      4      2      0.05
+      4      3      0.05
+      4      4      0.05
+ -9999   1    0  # terminator
+#
+4 #_maxlambdaphase
+1 #_sd_offset; must be 1 if any growthCV, sigmaR, or survey extraSD is an estimated parameter
+# read 7 changes to default Lambdas (default value is 1.0)
+# Like_comp codes:  1=surv; 2=disc; 3=mnwt; 4=length; 5=age; 6=SizeFreq; 7=sizeage; 8=catch; 9=init_equ_catch; 
+# 10=recrdev; 11=parm_prior; 12=parm_dev; 13=CrashPen; 14=Morphcomp; 15=Tag-comp; 16=Tag-negbin; 17=F_ballpark; 18=initEQregime
+#like_comp fleet  phase  value  sizefreq_method
+ 1 5 1 1 1
+ 1 6 1 1 1
+ 1 7 1 0 1
+ 4 1 1 1 1
+ 4 2 1 1 1
+ 4 3 1 1 1
+ 4 4 1 1 1
+-9999  1  1  1  1  #  terminator
+#
+# lambdas (for info only; columns are phases)
+#  0 0 0 0 #_CPUE/survey:_1
+#  0 0 0 0 #_CPUE/survey:_2
+#  0 0 0 0 #_CPUE/survey:_3
+#  0 0 0 0 #_CPUE/survey:_4
+#  1 1 1 1 #_CPUE/survey:_5
+#  1 1 1 1 #_CPUE/survey:_6
+#  0 0 0 0 #_CPUE/survey:_7
+#  1 1 1 1 #_lencomp:_1
+#  1 1 1 1 #_lencomp:_2
+#  1 1 1 1 #_lencomp:_3
+#  1 1 1 1 #_lencomp:_4
+#  0 0 0 0 #_lencomp:_5
+#  0 0 0 0 #_lencomp:_6
+#  0 0 0 0 #_lencomp:_7
+#  1 1 1 1 #_init_equ_catch1
+#  1 1 1 1 #_init_equ_catch2
+#  1 1 1 1 #_init_equ_catch3
+#  1 1 1 1 #_init_equ_catch4
+#  1 1 1 1 #_init_equ_catch5
+#  1 1 1 1 #_init_equ_catch6
+#  1 1 1 1 #_init_equ_catch7
+#  1 1 1 1 #_recruitments
+#  1 1 1 1 #_parameter-priors
+#  1 1 1 1 #_parameter-dev-vectors
+#  1 1 1 1 #_TG-comp_group:_1
+#  1 1 1 1 #_TG-comp_group:_2
+#  1 1 1 1 #_TG-comp_group:_3
+#  1 1 1 1 #_TG-comp_group:_4
+#  1 1 1 1 #_TG-comp_group:_5
+#  1 1 1 1 #_TG-comp_group:_6
+#  1 1 1 1 #_TG-comp_group:_7
+#  1 1 1 1 #_TG-comp_group:_8
+#  1 1 1 1 #_TG-comp_group:_9
+#  1 1 1 1 #_TG-comp_group:_10
+#  1 1 1 1 #_TG-comp_group:_11
+#  1 1 1 1 #_TG-comp_group:_12
+#  1 1 1 1 #_TG-comp_group:_13
+#  1 1 1 1 #_TG-comp_group:_14
+#  1 1 1 1 #_TG-comp_group:_15
+#  1 1 1 1 #_TG-comp_group:_16
+#  1 1 1 1 #_TG-comp_group:_17
+#  1 1 1 1 #_TG-comp_group:_18
+#  1 1 1 1 #_TG-comp_group:_19
+#  1 1 1 1 #_TG-comp_group:_20
+#  1 1 1 1 #_TG-comp_group:_21
+#  1 1 1 1 #_TG-comp_group:_22
+#  1 1 1 1 #_TG-comp_group:_23
+#  1 1 1 1 #_TG-comp_group:_24
+#  1 1 1 1 #_TG-comp_group:_25
+#  1 1 1 1 #_TG-comp_group:_26
+#  1 1 1 1 #_TG-comp_group:_27
+#  1 1 1 1 #_TG-comp_group:_28
+#  1 1 1 1 #_TG-comp_group:_29
+#  1 1 1 1 #_TG-comp_group:_30
+#  1 1 1 1 #_TG-comp_group:_31
+#  1 1 1 1 #_TG-comp_group:_32
+#  1 1 1 1 #_TG-comp_group:_33
+#  1 1 1 1 #_TG-comp_group:_34
+#  1 1 1 1 #_TG-comp_group:_35
+#  1 1 1 1 #_TG-comp_group:_36
+#  1 1 1 1 #_TG-comp_group:_37
+#  1 1 1 1 #_TG-comp_group:_38
+#  1 1 1 1 #_TG-comp_group:_39
+#  1 1 1 1 #_TG-comp_group:_40
+#  1 1 1 1 #_TG-comp_group:_41
+#  1 1 1 1 #_TG-comp_group:_42
+#  1 1 1 1 #_TG-comp_group:_43
+#  1 1 1 1 #_TG-comp_group:_44
+#  1 1 1 1 #_TG-comp_group:_45
+#  1 1 1 1 #_TG-comp_group:_46
+#  1 1 1 1 #_TG-comp_group:_47
+#  1 1 1 1 #_TG-comp_group:_48
+#  1 1 1 1 #_TG-comp_group:_49
+#  1 1 1 1 #_TG-negbin_group:_1
+#  1 1 1 1 #_TG-negbin_group:_2
+#  1 1 1 1 #_TG-negbin_group:_3
+#  1 1 1 1 #_TG-negbin_group:_4
+#  1 1 1 1 #_TG-negbin_group:_5
+#  1 1 1 1 #_TG-negbin_group:_6
+#  1 1 1 1 #_TG-negbin_group:_7
+#  1 1 1 1 #_TG-negbin_group:_8
+#  1 1 1 1 #_TG-negbin_group:_9
+#  1 1 1 1 #_TG-negbin_group:_10
+#  1 1 1 1 #_TG-negbin_group:_11
+#  1 1 1 1 #_TG-negbin_group:_12
+#  1 1 1 1 #_TG-negbin_group:_13
+#  1 1 1 1 #_TG-negbin_group:_14
+#  1 1 1 1 #_TG-negbin_group:_15
+#  1 1 1 1 #_TG-negbin_group:_16
+#  1 1 1 1 #_TG-negbin_group:_17
+#  1 1 1 1 #_TG-negbin_group:_18
+#  1 1 1 1 #_TG-negbin_group:_19
+#  1 1 1 1 #_TG-negbin_group:_20
+#  1 1 1 1 #_TG-negbin_group:_21
+#  1 1 1 1 #_TG-negbin_group:_22
+#  1 1 1 1 #_TG-negbin_group:_23
+#  1 1 1 1 #_TG-negbin_group:_24
+#  1 1 1 1 #_TG-negbin_group:_25
+#  1 1 1 1 #_TG-negbin_group:_26
+#  1 1 1 1 #_TG-negbin_group:_27
+#  1 1 1 1 #_TG-negbin_group:_28
+#  1 1 1 1 #_TG-negbin_group:_29
+#  1 1 1 1 #_TG-negbin_group:_30
+#  1 1 1 1 #_TG-negbin_group:_31
+#  1 1 1 1 #_TG-negbin_group:_32
+#  1 1 1 1 #_TG-negbin_group:_33
+#  1 1 1 1 #_TG-negbin_group:_34
+#  1 1 1 1 #_TG-negbin_group:_35
+#  1 1 1 1 #_TG-negbin_group:_36
+#  1 1 1 1 #_TG-negbin_group:_37
+#  1 1 1 1 #_TG-negbin_group:_38
+#  1 1 1 1 #_TG-negbin_group:_39
+#  1 1 1 1 #_TG-negbin_group:_40
+#  1 1 1 1 #_TG-negbin_group:_41
+#  1 1 1 1 #_TG-negbin_group:_42
+#  1 1 1 1 #_TG-negbin_group:_43
+#  1 1 1 1 #_TG-negbin_group:_44
+#  1 1 1 1 #_TG-negbin_group:_45
+#  1 1 1 1 #_TG-negbin_group:_46
+#  1 1 1 1 #_TG-negbin_group:_47
+#  1 1 1 1 #_TG-negbin_group:_48
+#  1 1 1 1 #_TG-negbin_group:_49
+#  1 1 1 1 #_crashPenLambda
+#  1 1 1 1 # F_ballpark_lambda
+0 # (0/1/2) read specs for more stddev reporting: 0 = skip, 1 = read specs for reporting stdev for selectivity, size, and numbers, 2 = add options for M and Dyn Bzero
+ # 0 2 0 0 # Selectivity: (1) fleet, (2) 1=len/2=age/3=both, (3) year, (4) N selex bins
+ # 0 0 # Growth: (1) growth pattern, (2) growth ages
+ # 0 0 0 # Numbers-at-age: (1) area(-1 for all), (2) year, (3) N ages
+ # -1 # list of bin #'s for selex std (-1 in first bin to self-generate)
+ # -1 # list of ages for growth std (-1 in first bin to self-generate)
+ # -1 # list of ages for NatAge std (-1 in first bin to self-generate)
+999
+
