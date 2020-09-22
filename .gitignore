@@ -1,6 +1,7 @@
 vignettes/*.html
 vignettes/*.R
 vignettes/ss3-*
+man/*.Rd
 *.zip
 *.tar.gz
 zzz.R
