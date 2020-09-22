@@ -1,7 +1,7 @@
 Package: skj
 Type: Package
 Title: IOTC skipjack MPE
-Version: 0.0.6
+Version: 0.0.7
 Date: 2020-09-22
 Authors@R: c(person(c("Charles", "T.T."), "Edwards", 
     email = "cescapecs@gmail.com",
@@ -29,6 +29,7 @@ Collate:
     'get_Nex_at_age.R'
     'get_Nex.R'
     'get_summaryB.R'
+    'get_summaryH.R'
     'plot_kobe.R'
     'plot_ssb.R'
     'plot_summaryCatch.R'
