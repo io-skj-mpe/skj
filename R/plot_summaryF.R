@@ -19,7 +19,7 @@ plot_summaryF <- function(report) {
   x <- get_summaryF(report)
   
   plot(value ~ Yr, data = x, type = "b", pch = 19, ylab = "Summary Fishing Mortality", xlab = "Year")
-  abline(v = report$endyr, col = 4, lty = 2)
+  abline(v = report$endyr + 1, col = 4, lty = 2)
   
 }
 #' 
@@ -45,5 +45,5 @@ plot_Fsum <- function(data, report, ...) {
     fmort_summary <- get_Fsum(data, report)
 
     plot(value ~ Yr, fmort_summary, type = "b", pch = 19, ylab = "Sum of Fishing Mortalities", xlab = "Year", ...)
-    abline(v = report$endyr, col = 4, lty = 2)
+    abline(v = report$endyr + 1, col = 4, lty = 2)
 }

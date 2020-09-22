@@ -15,7 +15,7 @@ get_catchSum <- function(data, report) {
   
   catch$CATCHSUM <- apply(catch[,1:length(ffleets)], 1, sum)
   
-  return(ddply(catch, .(Yr), summarise, Yr = unique(Yr), value = sum(CATCHSUM)))
+  return(ddply(catch, .(Yr), summarise, Yr = unique(Yr), catch = sum(CATCHSUM) / 1e3))
 }
 #'
 #' @export
@@ -23,6 +23,6 @@ plot_catchSum <- function(data, report, ...) {
     
     catch_summary <- get_catchSum(data, report)
 
-    plot(value ~ Yr, catch_summary, type = "b", pch = 19, ylab = "Sum of Catches", xlab = "Year", ...)
-    abline(v = report$endyr, col = 4, lty = 2)
+    plot(catch ~ Yr, catch_summary, type = "b", pch = 19, ylab = "Sum of Catches (e3)", xlab = "Year", ...)
+    abline(v = report$endyr + 1, col = 4, lty = 2)
 }
