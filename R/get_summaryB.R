@@ -2,7 +2,7 @@
 #' 
 #' Retrieve summary biomass from SS3 report file
 #'
-#' The summary biomass is the biomass-at-age summed over all ages over the minimum age specifiec in \codestarter.ss}
+#' The summary biomass is the biomass-at-age summed over all ages over the minimum age specifiec in \code{starter.ss}
 #'
 #' @param data SS3 \code{*.dat} file read using \code{r4ss::SS_readdat()}
 #' @param report SS3 output read using \code{r4ss::SS_output()}
@@ -13,7 +13,7 @@ get_summaryB <- function(start, report) {
 
     min_age <- start$min_age_summary_bio
 
-    out <- out$batage
+    out <- report$batage
 
     out$Bsum <- apply(out[, (13 + min_age):ncol(out)], 1, sum)
 
