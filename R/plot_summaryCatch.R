@@ -3,11 +3,11 @@
 #' @param report output from call to r4ss::SS_output()
 #' @import plyr
 #' @export
-get_catchSum <- function(data, report) {
+get_catchSum <- function(data, report, fleet = NULL) {
   
   ffleets <- which(data$fleetinfo$type == 1)
   
-  loc <- match(paste0("retain(B):_", ffleets), colnames(report$timeseries))
+  loc <- match(paste0("dead(B):_", ffleets), colnames(report$timeseries))
   
   catch <- report$timeseries[, loc]
   catch$Yr <- report$timeseries$Yr
@@ -15,7 +15,13 @@ get_catchSum <- function(data, report) {
   
   catch$CATCHSUM <- apply(catch[,1:length(ffleets)], 1, sum)
   
-  return(ddply(catch, .(Yr), summarise, Yr = unique(Yr), value = sum(CATCHSUM) / 1e3))
+  if (!is.null(fleet)) {
+    catch$CATCHSUM <- catch[, fleet]
+  } 
+  
+  dfr <- ddply(catch, .(Yr), summarise, Yr = unique(Yr), value = sum(CATCHSUM) / 1e3)
+  
+  return(dfr)
 }
 #'
 #' @export
