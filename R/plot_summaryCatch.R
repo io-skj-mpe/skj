@@ -5,6 +5,9 @@
 #' @export
 get_catchSum <- function(data, report, fleet = NULL) {
   
+  catch_fleets <- read_fleetinfo(data) %>% filter(type == "catch") %>% select(fleetname)
+  catch_fleets <- catch_fleets[,1]
+  
   ffleets <- which(data$fleetinfo$type == 1)
   
   loc <- match(paste0("dead(B):_", ffleets), colnames(report$timeseries))
@@ -16,7 +19,12 @@ get_catchSum <- function(data, report, fleet = NULL) {
   catch$CATCHSUM <- apply(catch[,1:length(ffleets)], 1, sum)
   
   if (!is.null(fleet)) {
-    catch$CATCHSUM <- catch[, fleet]
+    if (fleet %in% catch_fleets) {
+        loc <- match(fleet, catch_fleets)
+        catch$CATCHSUM <- catch[, loc]
+    } else {
+        stop("Fleet not present")
+    }
   } 
   
   dfr <- ddply(catch, .(Yr), summarise, Yr = unique(Yr), value = sum(CATCHSUM) / 1e3)
