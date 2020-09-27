@@ -1,8 +1,8 @@
 Package: skj
 Type: Package
 Title: IOTC skipjack MPE
-Version: 0.0.7
-Date: 2020-09-22
+Version: 0.0.8
+Date: 2020-09-27
 Authors@R: c(person(c("Charles", "T.T."), "Edwards", 
     email = "cescapecs@gmail.com",
     role = c("aut", "cre")))
@@ -15,8 +15,9 @@ Depends:
     R (>= 3.6)
 Imports:
     ss3sim (>= 1.0.3),
-    r4ss (>= 1.36.1),
+    r4ss (>= 1.40.0),
     plyr (>= 1.8.4),
+    dplyr (>= 1.0.0)
 RoxygenNote: 7.1.1
 Encoding: UTF-8
 Collate: 
@@ -28,13 +29,14 @@ Collate:
     'get_S_at_age.R'
     'get_Nex_at_age.R'
     'get_Nex.R'
+    'read_fleetinfo.R'
+    'get_index.R'
     'get_summaryB.R'
     'get_summaryH.R'
     'plot_kobe.R'
     'plot_ssb.R'
     'plot_summaryCatch.R'
     'plot_summaryF.R'
-    'read_fleetinfo.R'
     'run_ss3.R'
     'zzz.R'
 Suggests: 
