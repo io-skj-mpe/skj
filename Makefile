@@ -22,7 +22,7 @@ test:
 	Rscript inst\tests\tests.R
     
 build: $(PKG_FILES)
-	Rcmd build .
+	Rcmd build --no-build-vignettes .
 	Rcmd INSTALL $(PKG_NAME)_*.tar.gz
 	
 DESCRIPTION NAMESPACE: $(R_FILES)
