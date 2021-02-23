@@ -10,13 +10,16 @@ vignette: >
 This vignette describes the generation of first, the exploitable biomass, and second the associated abundance indices form the output of a SS3 model fit. 
 
 ```{r}
-run <- "io_h90_MAt_t4_rttp_tm25"
+# WPTT 2020
+run <- "io_h90_q0_tlambda1"
 ```
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  warning = FALSE,
+  message = FALSE
 )
 
 run_path <- basename(tempfile(pattern = "ss3-"))
@@ -99,20 +102,21 @@ skj_vuln_out <- merge(skj_vuln_out, index_units)
 skj_vuln_out$Fleet_label <- with(skj_vuln_out, paste0(Fleet, " (", units, ")"))
 ```
 
-```{r, echo = FALSE, fig.width = 14, fig.height = 5}
-# PLOTS VULNERABLE NUMBERS/BIOMASS
+## VULNERABLE BIOMASS
+```{r, echo = FALSE, fig.width = 10, height = 14}
+
 gg <- ggplot() + 
   geom_line(data = skj_vuln_out, aes(Yr_Seas, Vuln / 1e3), col = "red", size = 3) + 
   geom_line(data = skj_vuln, aes(Yr_Seas, Vuln / 1e3)) + 
-  facet_wrap(~Fleet_label, scales = "free_y") +
-  geom_vline(xintercept = skj_out$endyr, col = "blue") +
+  facet_grid(Fleet ~ ., scales = "free_y") +
+  geom_vline(xintercept = skj_out$endyr + 1, col = "blue") +
   labs(y = "Vulnerable Biomass", x = "Year (Season)") +
   theme_bw(base_size = 16)
 print(gg)
 ```
 
-
-```{r, echo = FALSE, fig.width = 14, fig.height = 5}
+## MODEL FIT AND PREDICTED INDICES
+```{r, echo = FALSE, fig.width = 10, height = 14}
 # FULL JOIN
 skj_vuln_full <- left_join(skj_vuln, skj_vuln_out, by = c("Fleet", "Area", "Seas", "Yr", "Yr_Seas", "units", "Fleet_label"), suffix = c("", "_out"))
 
@@ -126,10 +130,30 @@ gg <- ggplot(dfr) +
   geom_point(aes(Yr_Seas, Obs)) +
   geom_point(aes(Yr_Seas, Exp), col = "red", size = 3) +
   geom_line(aes(Yr_Seas, Vuln * Q)) +
-  facet_wrap(~Fleet_label, scales = "free_y")+
-  geom_vline(xintercept = skj_out$endyr, col = "blue") +
+  facet_grid(Fleet ~ ., scales = "free_y")+
+  geom_vline(xintercept = skj_out$endyr + 1, col = "blue") +
   labs(y = "CPUE", x = "Year (Season)") +
   theme_bw(base_size = 16)
 print(gg)
 ```
+```{r, echo = FALSE, results = 'hide'}
+unlink(run_path, recursive = TRUE)
+```
 
+Check package function `get_index()`
+```{r}
+dff <- get_index(skj_dat, skj_out)
+ttt <- full_join(dff, dfr)
+```
+
+```{r, echo = FALSE, fig.width = 10, height = 14}
+gg <- ggplot(ttt) +
+  geom_point(aes(Yr_Seas, Exp), col = "red", size = 3) +
+  geom_line(aes(Yr_Seas, Vuln * Q)) +
+  geom_line(aes(Yr_Seas, index), col = "blue") +
+  facet_grid(Fleet ~ ., scales = "free_y")+
+  geom_vline(xintercept = skj_out$endyr + 1, col = "blue") +
+  labs(y = "CPUE", x = "Year (Season)") +
+  theme_bw(base_size = 16)
+print(gg)
+```
