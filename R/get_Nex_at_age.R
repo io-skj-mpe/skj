@@ -4,9 +4,9 @@
 #' Extracts predicted numbers at age and multiplies through
 #' by the selectivity per fleet
 #' 
-#' @param data SS3 \code{*.dat} file read using \code{r4ss::SS_readdat()}
+#' @param data SS3 data file read using \code{r4ss::SS_readdat()}
 #' @param report SS3 output read using \code{r4ss::SS_output()}
-#' @import plyr
+#' @importFrom plyr '.'
 #' @include get_N_at_age.R get_S_at_age.R
 #' @export
 get_Nex_at_age <- function(data, report) {
@@ -25,7 +25,7 @@ get_Nex_at_age <- function(data, report) {
   N <- subset(N, Yr >= Ystart)
   
   # split by Area
-  NbyArea <- dlply(N, .(Area), .fun = function(x) x[,-2])
+  NbyArea <- plyr::dlply(N, .(Area), .fun = function(x) x[,-2])
   
   # SELECTIVITY
   S <- get_S_at_age(data, report)
@@ -34,7 +34,7 @@ get_Nex_at_age <- function(data, report) {
   S <- subset(S, Yr >= Ystart)
   
   # split by factors common to N
-  SbyFactor <- dlply(S, .(Fleet, Seas, Sex, Morph), .fun = function(x) { y <- x[,c(7:(Nages + 7))]; rownames(y) <- x[, "Yr"]; y })
+  SbyFactor <- plyr::dlply(S, .(Fleet, Seas, Sex, Morph), .fun = function(x) { y <- x[,c(7:(Nages + 7))]; rownames(y) <- x[, "Yr"]; y })
   
   # for each area
   N <- vector('list', length = Nareas)
@@ -43,10 +43,10 @@ get_Nex_at_age <- function(data, report) {
   for (i in 1:Nareas) {
     
     # split Numbers
-    NbyFactor <- dlply(NbyArea[[i]], .(Fleet, Seas, Sex, Morph), .fun = function(x) { y <- x[,c(13:(Nages + 13))]; rownames(y) <- x[, "Yr"]; y })
+    NbyFactor <- plyr::dlply(NbyArea[[i]], .(Fleet, Seas, Sex, Morph), .fun = function(x) { y <- x[,c(13:(Nages + 13))]; rownames(y) <- x[, "Yr"]; y })
     
     # implicit loop over factors
-    StimesN <- dlply(attributes(SbyFactor)$split_labels, .(Fleet, Seas, Sex, Morph), function(z) data.frame())
+    StimesN <- plyr::dlply(attributes(SbyFactor)$split_labels, .(Fleet, Seas, Sex, Morph), function(z) data.frame())
     
     stopifnot(all(names(StimesN) == names(NbyFactor)))
     
@@ -56,11 +56,11 @@ get_Nex_at_age <- function(data, report) {
       y <- cbind(Yr = as.numeric(rownames(y)), y)
       return(y)
     })
-    N[[i]] <- ldply(StimesN)
+    N[[i]] <- plyr::ldply(StimesN)
   }
   
   # rejoin
-  N <- ldply(N, .id = "Area")
+  N <- plyr::ldply(N, .id = "Area")
   
   # return
   return(N)

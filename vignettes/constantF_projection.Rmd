@@ -2,7 +2,7 @@
 title: "Projecting under constant F"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{constant F projection}
+  %\VignetteIndexEntry{Projecting under constant F}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

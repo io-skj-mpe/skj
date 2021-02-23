@@ -9,7 +9,7 @@ get_summaryB(start, report)
 \arguments{
 \item{report}{SS3 output read using \code{r4ss::SS_output()}}
 
-\item{data}{SS3 \code{*.dat} file read using \code{r4ss::SS_readdat()}}
+\item{data}{SS3 data file read using \code{r4ss::SS_readdat()}}
 }
 \description{
 The summary biomass is the biomass-at-age summed over all ages over the minimum age specifiec in \code{starter.ss}

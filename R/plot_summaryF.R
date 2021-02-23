@@ -1,7 +1,6 @@
 #' Plot the fishing mortality
 #'
 #' @param report output from call to r4ss::SS_output()
-#' @import plyr
 #' @export
 get_summaryF <- function(report) {
 
@@ -36,7 +35,7 @@ get_Fsum <- function(data, report) {
   
   fmort$FSUM <- apply(fmort[,1:length(ffleets)], 1, sum)
   
-  return(ddply(fmort, .(Yr), summarise, Yr = unique(Yr), value = sum(FSUM)))
+  return(plyr::ddply(fmort, "Yr", plyr::summarise, Yr = unique(Yr), value = sum(FSUM)))
 }
 #'
 #' @export

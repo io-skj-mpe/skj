@@ -7,7 +7,7 @@
 get_Nex_at_age(data, report)
 }
 \arguments{
-\item{data}{SS3 \code{*.dat} file read using \code{r4ss::SS_readdat()}}
+\item{data}{SS3 data file read using \code{r4ss::SS_readdat()}}
 
 \item{report}{SS3 output read using \code{r4ss::SS_output()}}
 }

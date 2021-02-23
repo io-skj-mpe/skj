@@ -5,8 +5,7 @@
 #' 
 #' @param data SS3 \code{*.dat} file read using \code{r4ss::SS_readdat()}
 #' @param report SS3 output read using \code{r4ss::SS_output()}
-#' 
-#' @import plyr
+#' @importFrom plyr '.'
 #' @export
 get_S_at_age <- function(data, report) {
   
@@ -14,9 +13,9 @@ get_S_at_age <- function(data, report) {
   Sel <- subset(report$ageselex, Factor == "Asel2")[, -1]
   
   # rename fleets
-  Sel <- dlply(Sel, .(Fleet), .fun = function(x) x[,-1])
+  Sel <- plyr::dlply(Sel, .(Fleet), .fun = function(x) x[,-1])
   attributes(Sel) <- list(names = data$fleetnames)
-  Sel <- ldply(Sel, .id = "Fleet")  
+  Sel <- plyr::ldply(Sel, .id = "Fleet")  
   
   # return
   return(Sel)

@@ -6,8 +6,6 @@
 #'
 #' @param data SS3 \code{*.dat} file read using \code{r4ss::SS_readdat()}
 #' @param report SS3 output read using \code{r4ss::SS_output()}
-#' 
-#' @import plyr
 #' @export
 get_summaryH <- function(start, data, report) {
 

@@ -1,7 +1,6 @@
 #' Plot Kobe
 #'
 #' @param report output from call to r4ss::SS_output()
-#' @import plyr
 #' @export
 plot_kobe <- function(report, ...) {
   

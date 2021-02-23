@@ -2,7 +2,6 @@
 #'
 #' @param data output from call to r4ss::SS_readdat()
 #' @param report output from call to r4ss::SS_output()
-#' @import plyr
 #' @export
 get_ssb <- function(data, report) {
 

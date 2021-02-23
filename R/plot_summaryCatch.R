@@ -1,11 +1,11 @@
 #' Plot the catches
 #'
 #' @param report output from call to r4ss::SS_output()
-#' @import plyr
+#' @importFrom dplyr '%>%'
 #' @export
 get_catchSum <- function(data, report, fleet = NULL) {
   
-  catch_fleets <- read_fleetinfo(data) %>% filter(type == "catch") %>% select(fleetname)
+  catch_fleets <- read_fleetinfo(data) %>% dplyr::filter(type == "catch") %>% dplyr::select(fleetname)
   catch_fleets <- catch_fleets[,1]
   
   ffleets <- which(data$fleetinfo$type == 1)
@@ -27,7 +27,7 @@ get_catchSum <- function(data, report, fleet = NULL) {
     }
   } 
   
-  dfr <- ddply(catch, .(Yr), summarise, Yr = unique(Yr), value = sum(CATCHSUM) / 1e3)
+  dfr <- plyr::ddply(catch, "Yr", plyr::summarise, Yr = unique(Yr), value = sum(CATCHSUM) / 1e3)
   
   return(dfr)
 }
