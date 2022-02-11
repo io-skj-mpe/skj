@@ -6,9 +6,11 @@
 get_ssb <- function(data, report) {
 
   ssb <- report$timeseries[, "SpawnBio"]
-  ssb <- cbind(value = ssb / 1e3, Yr = report$timeseries$Yr, Seas = 1:4)
+  ssb <- cbind(value = ssb / 1e3, Yr = report$timeseries$Yr, Area = report$timeseries$Area, Seas = 1:4)
+  ssb <- ssb[ssb[,4] == 1,]
   
-  ssb <- as.data.frame(ssb[ssb[,3] == 1, 2:1])
+  ssb <- data.frame(value = tapply(ssb[,"value"], ssb[,"Yr"], sum))
+  ssb <- data.frame(Yr = as.integer(rownames(ssb)), ssb)
   
   return(ssb)
 }
