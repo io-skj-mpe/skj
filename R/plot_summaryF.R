@@ -31,6 +31,7 @@ get_Fsum <- function(data, report) {
   
   fmort <- report$timeseries[, loc]
   fmort$Yr <- report$timeseries$Yr
+  fmort$Area <- report$timeseries$Area
   fmort$Seas <- 1:4
   
   fmort$FSUM <- apply(fmort[,1:length(ffleets)], 1, sum)
