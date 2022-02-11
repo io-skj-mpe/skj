@@ -34,7 +34,7 @@ get_NwtSel_at_age <- function(data, report) {
     WtSelbyFleet <- plyr::dlply(WtSel, .(Fleet), .fun = function(x) x[,-1])
     
     # then by other factors
-    WtSelbyFactor <- lapply(WtSelbyFleet, function(x) dlply(x, .(Seas, Sex, Morph), .fun = function(y) {z <- y[, c(5:(Nages + 5))]; rownames(z) <- y[, "Yr"]; z }))
+    WtSelbyFactor <- lapply(WtSelbyFleet, function(x) plyr::dlply(x, .(Seas, Sex, Morph), .fun = function(y) {z <- y[, c(5:(Nages + 5))]; rownames(z) <- y[, "Yr"]; z }))
     
     NwtSel <- vector('list', Nfleets)
     NwtSel <- lapply(NwtSel, function(x) vector('list', Nareas))
