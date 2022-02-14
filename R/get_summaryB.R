@@ -11,10 +11,18 @@ get_summaryB <- function(start, report) {
     min_age <- start$min_age_summary_bio
 
     out <- report$batage
+    out <- out[out$"Beg/Mid" == "B" & out$"Seas" == 1,]
+    
+    out <- split(out, f = out$Area)
+    
+    out <- lapply(out, function(x) data.frame("Yr" = x[,"Yr"], "value" = apply(x[,(13 + min_age):ncol(x)], 1, function(y) sum(y) / 1e3)))
 
-    out$Bsum <- apply(out[, (13 + min_age):ncol(out)], 1, sum)
+    #out$Bsum <- apply(out[, (13 + min_age):ncol(out)], 1, sum)
 
-    out <- plyr::ddply(out[out$"Beg/Mid" == "B" & out$"Seas" == 1,], "Yr", plyr::summarise, value = sum(Bsum) / 1e3)
+    #out <- plyr::ddply(out[out$"Beg/Mid" == "B" & out$"Seas" == 1,], "Yr", plyr::summarise, value = sum(Bsum) / 1e3)
+    
+    # sum(out$value)
+    # 136813.6
     
     return(out)
 
