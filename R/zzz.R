@@ -1,4 +1,4 @@
 .onAttach <- function(libname, pkgname)
 {
-    packageStartupMessage("skj version 0.0.10 (2022-02-11 12:12:50)")
+    packageStartupMessage("skj version 0.1.4 (2022-02-16 15:46:38)")
 }

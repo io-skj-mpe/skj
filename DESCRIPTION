@@ -1,8 +1,8 @@
 Package: skj
 Type: Package
 Title: IOTC skipjack MPE
-Version: 0.0.10
-Date: 2022-02-11
+Version: 0.1.4
+Date: 2022-02-16
 Authors@R: c(person(c("Charles", "T.T."), "Edwards", 
     email = "cescapecs@gmail.com",
     role = c("aut", "cre")))
@@ -39,6 +39,7 @@ Collate:
     'plot_summaryCatch.R'
     'plot_summaryF.R'
     'run_ss3.R'
+    'set_par_forecastyrs.R'
     'zzz.R'
 Suggests: 
     knitr,
