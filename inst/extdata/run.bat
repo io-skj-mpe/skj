@@ -1,4 +1,4 @@
-
+del RUNLOG
 FOR /d %%A IN (*) DO (
 
     cd %%A
