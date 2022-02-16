@@ -1,4 +1,4 @@
-#V3.30.15.09-safe;_2020_07_06;_Stock_Synthesis_by_Richard_Methot_(NOAA)_using_ADMB_12.0
+#V3.30.16.02;_2020_09_21;_safe;_Stock_Synthesis_by_Richard_Methot_(NOAA)_using_ADMB_12.2
 #Stock Synthesis (SS) is a work of the U.S. Government and is not subject to copyright protection in the United States.
 #Foreign copyrights may apply. See copyright.txt for more information.
 #_user_support_available_at:NMFS.Stock.Synthesis@noaa.gov
@@ -14,8 +14,10 @@ CONTROL.SS
 1 # write to cumreport.sso (0=no,1=like&timeseries; 2=add survey fits)
 0 # Include prior_like for non-estimated parameters (0,1) 
 1 # Use Soft Boundaries to aid convergence (0,1) (recommended)
-1 # Number of datafiles to produce: 1st is input, 2nd is estimates, 3rd and higher are bootstrap
+#
+1 # Number of datafiles to produce: 1st is input, 2nd is estimates, 3rd and higher are bootstrap, 0 turns off all *.ss_new output
 10 # Turn off estimation for parameters entering after this phase
+#
 10 # MCeval burn interval
 2 # MCeval thin interval
 0 # jitter initial parm value by this fraction
@@ -35,5 +37,5 @@ CONTROL.SS
 0 # F_std_basis: 0=raw_annual_F; 1=F/Fspr; 2=F/Fmsy; 3=F/Fbtgt; where F means annual_F; values >=11 invoke multiyr with 10's digit
 0 # MCMC output detail: integer part (0=default; 1=adds obj func components); and decimal part (added to SR_LN(R0) on first call to mcmc)
 0 # ALK tolerance (example 0.0001)
--1 # random number seed for bootstrap data (-1 to use long(time) as seed): # 1600721453
+-1 # random number seed for bootstrap data (-1 to use long(time) as seed): # 1645012780
 3.30 # check value for end of file and for version control

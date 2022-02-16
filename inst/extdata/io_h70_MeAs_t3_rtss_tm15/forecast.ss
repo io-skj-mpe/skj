@@ -1,4 +1,4 @@
-#V3.30.15.09-safe;_2020_07_06;_Stock_Synthesis_by_Richard_Methot_(NOAA)_using_ADMB_12.0
+#V3.30.16.02;_2020_09_21;_safe;_Stock_Synthesis_by_Richard_Methot_(NOAA)_using_ADMB_12.2
 #Stock Synthesis (SS) is a work of the U.S. Government and is not subject to copyright protection in the United States.
 #Foreign copyrights may apply. See copyright.txt for more information.
 # for all year entries except rebuilder; enter either: actual year, -999 for styr, 0 for endyr, neg number for rel. endyr
@@ -45,7 +45,7 @@
 # 2 1 0.0551522
 # 2 2 0.066428
 # 2 3 0.00418462
-# 2 4 0.0903021
+# 2 4 0.090302
 # 3 1 0.0324137
 # 3 2 0.121494
 # 3 3 0.0018625
