@@ -13,7 +13,8 @@ get_catchSum <- function(data, report, fleet = NULL) {
   loc <- match(paste0("dead(B):_", ffleets), colnames(report$timeseries))
   
   catch <- report$timeseries[, loc]
-  catch$Yr <- report$timeseries$Yr
+  catch$Area <- report$timeseries$Area
+  catch$Yr   <- report$timeseries$Yr
   catch$Seas <- 1:4
   
   catch$CATCHSUM <- apply(catch[,1:length(ffleets)], 1, sum)
@@ -27,7 +28,7 @@ get_catchSum <- function(data, report, fleet = NULL) {
     }
   } 
   
-  dfr <- plyr::ddply(catch, "Yr", plyr::summarise, Yr = unique(Yr), value = sum(CATCHSUM) / 1e3)
+  dfr <- plyr::ddply(catch, c("Area", "Yr"), plyr::summarise, value = sum(CATCHSUM) / 1e3)
   
   return(dfr)
 }
@@ -36,7 +37,8 @@ get_catchSum <- function(data, report, fleet = NULL) {
 plot_catchSum <- function(data, report, ...) {
     
     dfr <- get_catchSum(data, report)
-
+    dfr <- plyr::ddply(dfr, "Yr", plyr::summarise, value = sum(value))
+    
     plot(value ~ Yr, dfr, type = "b", pch = 19, ylab = "Sum of Catches (e3)", xlab = "Year", ...)
     abline(v = report$endyr + 1, col = 4, lty = 2)
 }
