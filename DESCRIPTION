@@ -2,11 +2,10 @@ Package: skj
 Type: Package
 Title: IOTC skipjack MPE
 Version: 0.1.4
-Date: 2022-02-16
-Authors@R: c(person(c("Charles", "T.T."), "Edwards", 
-    email = "cescapecs@gmail.com",
-    role = c("aut", "cre")))
-Description: IOTC skipjack MPE
+Date: 2022-02-20
+Author: Charles T T Edwards <cescapecs@gmail.com>
+Maintainer: Charles T T Edwards <cescapecs@gmail.com>
+Description: Function to facilitate interaction with SS3 IOTC SKJ model for purposes of performing a management simulation evaluation.
 License: MIT
 URL: https://github.com/cttedwards/skj
 BugReports: https://github.com/cttedwards/skj/issues
@@ -40,6 +39,7 @@ Collate:
     'plot_summaryF.R'
     'run_ss3.R'
     'set_par_forecastyrs.R'
+    'tidy.R'
     'zzz.R'
 Suggests: 
     knitr,

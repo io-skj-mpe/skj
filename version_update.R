@@ -6,9 +6,6 @@ TIME    <- Sys.time()
 # increment development version
 VERSION <- paste(substr(VERSION, start = 1, stop = 4), as.numeric(substr(VERSION, start = 5, stop = 5)) + 1, sep = '')
 
-# document package
-roxygen2::roxygenise(".")
-
 # update DESCRIPTION
 DESCRIPTION    <- readLines('DESCRIPTION')
 DESCRIPTION[4] <- paste('Version:', VERSION)
