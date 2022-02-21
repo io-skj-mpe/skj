@@ -5,6 +5,10 @@
 #' @param report SS3 output read using \code{r4ss::SS_output()}
 #' @importFrom plyr '.'
 #' @importFrom dplyr '%>%' 
+#' @importFrom dplyr filter
+#' @importFrom dplyr select
+#' @importFrom dplyr left_join
+#' @importFrom reshape2 melt
 #' @include get_Bex.R get_Nex.R read_fleetinfo.R
 #' @export
 get_index <- function(data, report) {
@@ -44,6 +48,9 @@ get_index <- function(data, report) {
     
     vuln <- dplyr::left_join(vuln, Q, by = "Fleet")
     
+    # get fleet area combinations
+    retain_fleet_area <- reshape2::melt(table(report$cpue$Area, report$cpue$Fleet_name) > 0, varnames = c("Area", "Fleet")) %>% filter(value) %>% select(-value)
+    
     # calculate index
     vuln$index <- with(vuln, Vuln * Q)
     
@@ -68,6 +75,9 @@ get_index <- function(data, report) {
     # FULL JOIN
     vuln_full <- dplyr::left_join(vuln, vuln_out, by = c("Fleet", "Area", "Seas", "Yr", "Yr_Seas", "units", "Fleet_label"), suffix = c("", "_out"))
     
+    # SUBSET TO FLEET-AREA COMBINATION IN DATA
+    vuln_full <- left_join(retain_fleet_area, vuln_full)
+    
     # check that reconstructed index is the same as the model outputted values
     # over the range of the data
     #stopifnot(with(subset(vuln_full, !is.na(Vuln_out)), all.equal(Vuln, Vuln_out, tolerance = 1e-1)))
@@ -77,7 +87,7 @@ get_index <- function(data, report) {
     vuln_full$Bex <- NULL
     vuln_full$Nex <- NULL
     vuln_full$Vuln_out <- NULL
-    vuln_full$Exp <- NULL
+    colnames(vuln_full)[match("Exp", colnames(vuln_full))] <- "index_mle"
     colnames(vuln_full)[match("Obs", colnames(vuln_full))] <- "index_obs"
     
     # return
