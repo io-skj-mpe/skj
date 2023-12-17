@@ -6,7 +6,7 @@ FOR /d %%A IN (*) DO (
     ss -nohess
     
     copy starter.ss_new starter.ss
-    copy data.ss_new data.ss
+    copy data_echo.ss_new data.ss
     copy control.ss_new control.ss
     copy forecast.ss_new forecast.ss
     
