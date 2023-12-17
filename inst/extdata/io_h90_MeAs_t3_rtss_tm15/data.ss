@@ -1,26 +1,25 @@
-#V3.30.16.02;_2020_09_21;_safe;_Stock_Synthesis_by_Richard_Methot_(NOAA)_using_ADMB_12.2
-#Stock Synthesis (SS) is a work of the U.S. Government and is not subject to copyright protection in the United States.
-#Foreign copyrights may apply. See copyright.txt for more information.
-#_user_support_available_at:NMFS.Stock.Synthesis@noaa.gov
-#_user_info_available_at:https://vlab.ncep.noaa.gov/group/stock-synthesis
-#_Start_time: Wed Feb 16 13:03:01 2022
-#_Number_of_datafiles: 1
+#V3.30.22.00;_safe;_compile_date:_Oct 30 2023;_Stock_Synthesis_by_Richard_Methot_(NOAA)_using_ADMB_13.1
+#_Stock_Synthesis_is_a_work_of_the_U.S._Government_and_is_not_subject_to_copyright_protection_in_the_United_States.
+#_Foreign_copyrights_may_apply._See_copyright.txt_for_more_information.
+#_User_support_available_at:NMFS.Stock.Synthesis@noaa.gov
+#_User_info_available_at:https://vlab.noaa.gov/group/stock-synthesis
+#_Source_code_at:_https://github.com/nmfs-stock-synthesis/stock-synthesis
 
-#_observed data: 
-#V3.30.16.02;_2020_09_21;_safe;_Stock_Synthesis_by_Richard_Methot_(NOAA)_using_ADMB_12.2
-#Stock Synthesis (SS) is a work of the U.S. Government and is not subject to copyright protection in the United States.
-#Foreign copyrights may apply. See copyright.txt for more information.
+#_Start_time: Sun Dec 17 16:04:44 2023
+#_echo_input_data
+
+#V3.30.22.00;_safe;_compile_date:_Oct 30 2023;_Stock_Synthesis_by_Richard_Methot_(NOAA)_using_ADMB_13.1
 1950 #_StartYr
 2016 #_EndYr
 4 #_Nseas
  3 3 3 3 #_months/season
 2 #_Nsubseasons (even number, minimum is 2)
 1 #_spawn_month
-1 #_Ngenders: 1, 2, -1  (use -1 for 1 sex setup with SSB multiplied by female_frac parameter)
+1 #_Nsexes: 1, 2, -1  (use -1 for 1 sex setup with SSB multiplied by female_frac parameter)
 8 #_Nages=accumulator age, first age is always age 0
 1 #_Nareas
 7 #_Nfleets (including surveys)
-#_fleet_type: 1=catch fleet; 2=bycatch only fleet; 3=survey; 4=ignore 
+#_fleet_type: 1=catch fleet; 2=bycatch only fleet; 3=survey; 4=predator(M2) 
 #_sample_timing: -1 for fishing fleet to use season-long catch-at-age for observations, or 1 to use observation month;  (always 1 for surveys)
 #_fleet_area:  area the fleet/survey operates in 
 #_units of catch:  1=bio; 2=num (ignored for surveys; their units read later)
@@ -1135,10 +1134,11 @@
 2016 4 4 48733 0.01
 -9999 0 0 0 0
 #
- #_CPUE_and_surveyabundance_observations
-#_Units:  0=numbers; 1=biomass; 2=F; 30=spawnbio; 31=recdev; 32=spawnbio*recdev; 33=recruitment; 34=depletion(&see Qsetup); 35=parm_dev(&see Qsetup)
+#_CPUE_and_surveyabundance_and_index_observations
+#_Units: 0=numbers; 1=biomass; 2=F; 30=spawnbio; 31=exp(recdev); 36=recdev; 32=spawnbio*recdev; 33=recruitment; 34=depletion(&see Qsetup); 35=parm_dev(&see Qsetup)
 #_Errtype:  -1=normal; 0=lognormal; >0=T
 #_SD_Report: 0=no sdreport; 1=enable sdreport
+#_note that link functions are specified in Q_setup section of control file
 #_Fleet Units Errtype SD_Report
 1 1 0 0 # PL
 2 1 0 0 # PSLS
@@ -1333,7 +1333,8 @@
 0 #_N_fleets_with_discard
 #_discard_units (1=same_as_catchunits(bio/num); 2=fraction; 3=numbers)
 #_discard_errtype:  >0 for DF of T-dist(read CV below); 0 for normal with CV; -1 for normal with se; -2 for lognormal; -3 for trunc normal with CV
-# note, only have units and errtype for fleets with discard 
+# note: only enter units and errtype for fleets with discard 
+# note: discard data is the total for an entire season, so input of month here must be to a month in that season
 #_Fleet units errtype
 # -9999 0 0 0.0 0.0 # terminator for discard data 
 #
@@ -1348,15 +1349,16 @@
 # no additional input for option 1
 # read binwidth, minsize, lastbin size for option 2
 # read N poplen bins, then vector of bin lower boundaries, for option 3
-1 # use length composition data (0/1)
+1 # use length composition data (0/1/2) where 2 invokes new comp_control format
 #_mintailcomp: upper and lower distribution for females and males separately are accumulated until exceeding this level.
 #_addtocomp:  after accumulation of tails; this value added to all bins
-#_combM+F: males and females treated as combined gender below this bin number 
+#_combM+F: males and females treated as combined sex below this bin number 
 #_compressbins: accumulate upper tail by this number of bins; acts simultaneous with mintailcomp; set=0 for no forced accumulation
-#_Comp_Error:  0=multinomial, 1=dirichlet
-#_ParmSelect:  parm number for dirichlet
+#_Comp_Error:  0=multinomial, 1=dirichlet using Theta*n, 2=dirichlet using beta, 3=MV_Tweedie
+#_ParmSelect:  consecutive index for dirichlet or MV_Tweedie
 #_minsamplesize: minimum sample size; set to 1 to match 3.24, minimum value is 0.001
 #
+#_Using old format for composition controls
 #_mintailcomp addtocomp combM+F CompressBins CompError ParmSelect minsamplesize
 -0.0001 0.01 0 0 0 0 1 #_fleet:1_PL
 -0.0001 0.01 0 0 0 0 1 #_fleet:2_PSLS
@@ -1802,10 +1804,10 @@
 # 0 #_N_ageerror_definitions
 #_mintailcomp: upper and lower distribution for females and males separately are accumulated until exceeding this level.
 #_addtocomp:  after accumulation of tails; this value added to all bins
-#_combM+F: males and females treated as combined gender below this bin number 
+#_combM+F: males and females treated as combined sex below this bin number 
 #_compressbins: accumulate upper tail by this number of bins; acts simultaneous with mintailcomp; set=0 for no forced accumulation
-#_Comp_Error:  0=multinomial, 1=dirichlet
-#_ParmSelect:  parm number for dirichlet
+#_Comp_Error:  0=multinomial, 1=dirichlet using Theta*n, 2=dirichlet using beta, 3=MV_Tweedie
+#_ParmSelect:  consecutive index for dirichlet or MV_Tweedie
 #_minsamplesize: minimum sample size; set to 1 to match 3.24, minimum value is 0.001
 #
 #_mintailcomp addtocomp combM+F CompressBins CompError ParmSelect minsamplesize
@@ -1828,15 +1830,17 @@
 # -2 in yr will subtract mean for that env_var; -1 will subtract mean and divide by stddev (e.g. Z-score)
 #Yr Variable Value
 #
-0 # N sizefreq methods to read 
-#
-1 # do tags (0/1)
+# Sizefreq data. Defined by method because a fleet can use multiple methods
+0 # N sizefreq methods to read (or -1 for expanded options)
+# 
+1 # do tags (0/1/2); where 2 allows entry of TG_min_recap
 78 # N tag groups
 653 # N recap events
-3 # mixing latency period: N periods to delay before comparing observed to expected recoveries (0 = release period)
-16 # max periods (seasons) to track recoveries, after which tags enter accumulator
+3 # TG_mixperiod ## (latency) is the first period in which logL is calculated for this tag group (0 = release period)
+16 # max periods ##  to track recaptures (units=seasons), after which tags are still read into this accumulator period
+# COND:  TG_min_recap ##  use Do_TG=2 to invoke reading TG_min_recap after TG_maxperiods
 # Release data for each tag group.  Tags are considered to be released at the beginning of a season (period)
-#<TG> area yr season <tfill> gender age Nrelease  (note that the TG and tfill values are placeholders and are replaced by program generated values)
+#<TG> area yr season <tfill> sex age Nrelease  (note that the TG and tfill values are placeholders and are replaced by program generated values)
  1 1 2004 3 2168 0 0 2603.55
  2 1 2004 3 2168 0 1 413.1
  3 1 2004 3 2168 0 2 9.35
@@ -2580,4 +2584,3 @@
 #
 999
 
-ENDDATA
