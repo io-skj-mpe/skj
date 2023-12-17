@@ -5,3 +5,19 @@ vignettes/ss3-*
 *.tar.gz
 man/*.Rd
 
+*.sso
+*.log
+*.ss_new
+*.bar
+*.b01
+*.r01
+*.b02
+*.r02
+*.b03
+*.r04
+*.p04
+*.p03
+*.r03
+*.p01
+*.b04
+*.p02
