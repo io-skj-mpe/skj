@@ -5,9 +5,13 @@
 #_User_info_available_at:https://vlab.noaa.gov/group/stock-synthesis
 #_Source_code_at:_https://github.com/nmfs-stock-synthesis/stock-synthesis
 
+#C starter file written by R function SS_writestarter
+#C rerun model to get more complete formatting in starter.ss_new
+#C should work with SS version: 3.30
+#C file write time: 2023-12-17 14:09:14.919232
 data.ss
 control.ss
-0 # 0=use init values in control file; 1=use ss.par
+1 # 0=use init values in control file; 1=use ss.par
 1 # run display detail (0 = minimal; 1=one line per iter; 2=each logL)
 1 # detailed output (0=minimal for data-limited, 1=high (w/ wtatage.ss_new), 2=brief, 3=custom) 
 #COND: custom report options: -100 to start with minimal; -101 to start with all; -number to remove, +number to add, -999 to end
@@ -39,5 +43,5 @@ control.ss
 2 # F_std_scaling: 0=no scaling; 1=F/Fspr; 2=F/Fmsy; 3=F/Fbtgt; where F means annual F_std, Fmsy means F_std@msy; values >=11 invoke N multiyr (up to 9!) using 10's digit; >100 invokes log(ratio)
 0 # MCMC output detail: integer part (0=default; 1=adds obj func components; 2= +write_report_for_each_mceval); and decimal part (added to SR_LN(R0) on first call to mcmc)
 0 # ALK tolerance ***disabled in code
--1 # random number seed for bootstrap data (-1 to use long(time) as seed): # 1702754914
+-1 # random number seed for bootstrap data (-1 to use long(time) as seed): # 1702828120
 3.30 # check value for end of file and for version control
