@@ -1,8 +1,8 @@
 Package: skj
 Type: Package
 Title: IOTC skipjack MPE
-Version: 0.1.5
-Date: 2023-12-15
+Version: 0.1.7
+Date: 2023-12-17
 Author: Charles T T Edwards <cescapecs@gmail.com>
 Maintainer: Charles T T Edwards <cescapecs@gmail.com>
 Description: Function to facilitate interaction with SS3 IOTC SKJ model for purposes of performing a management simulation evaluation.
@@ -13,11 +13,10 @@ LazyData: true
 Depends:
     R (>= 3.6)
 Imports:
-    ss3sim (>= 1.0.3),
     r4ss (>= 1.40.0),
     plyr (>= 1.8.4),
     dplyr (>= 1.0.0)
-RoxygenNote: 7.1.1
+RoxygenNote: 7.2.3
 Encoding: UTF-8
 Collate: 
     'copy_ss3_files.R'

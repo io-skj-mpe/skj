@@ -1,6 +1,5 @@
 #' Run SS3
 #' 
-#' @import ss3sim
 #' @export
 run_ss3 <- function(admb_options = "", hess = FALSE, ignore.stdout = TRUE, admb_pause = 0.05, show.output.on.console = FALSE, ...) {
   
@@ -11,7 +10,9 @@ run_ss3 <- function(admb_options = "", hess = FALSE, ignore.stdout = TRUE, admb_
   os <- .Platform$OS.type
   ss_bin <- "ss"
   
-  bin <- get_bin(ss_bin)
+  bin <- Sys.which(ss_bin) #get_bin(ss_bin)
+  
+  if (bin == "") stop("The SS3 executable 'ss' was not found in your path")
   
   ss_em_options <- ifelse(hess, "", "-nohess")
   

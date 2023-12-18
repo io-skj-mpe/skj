@@ -1,4 +1,4 @@
-#' Copy IOTC 2017 SKJ assessment files
+#' Copy IOTC SKJ assessment files
 #'
 #' StockSynthesis files retained in the package are copied to
 #' the specified directory 
@@ -27,6 +27,10 @@ copy_ss3_files <- function(run, path, overwrite = TRUE) {
   file.copy(file.path(DIR, "data.ss"), file.path(path, run, "data.ss"), overwrite = overwrite)
   file.copy(file.path(DIR, "forecast.ss"), file.path(path, run, "forecast.ss"), overwrite = overwrite)
   file.copy(file.path(DIR, "starter.ss"), file.path(path, run, "starter.ss"), overwrite = overwrite)
+  
+  if (file.exists(file.path(DIR, "ss.par"))) {
+    file.copy(file.path(DIR, "ss.par"), file.path(path, run, "ss.par"), overwrite = overwrite)
+  }
 }
 
 
