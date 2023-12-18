@@ -1,16 +1,13 @@
-suppressWarnings(library(testthat))
 
-wd <- getwd()
-setwd("inst/tests")
+### RUN SS3 2023 ASSESSMENT
 
-library(skj)
-library(r4ss)
+#run <- "io_h90_MAt_t4_rttp_tm25"
+#run <- "io_h90_q0_tlambda1"
 
-### RUN SS3 2017 ASSESSMENT
+runs <- scan(system.file("extdata", "runs_2023", package = "skj"), what = character())
+run  <- sample(runs, 1)
 
-run <- "io_h90_MAt_t4_rttp_tm25"
-
-run_path <- basename(tempfile(pattern = "ss3-"))
+run_path <- tempdir()
 dir.create(run_path, showWarnings = FALSE, recursive = TRUE)
 setwd(run_path)
 
@@ -19,8 +16,8 @@ setwd(run)
 
 run_ss3()
 
-skj_dat <- SS_readdat("data.ss")
-skj_rep <- SS_output(".", printstats = FALSE, verbose = FALSE, covar = FALSE)
+skj_dat <- r4ss::SS_readdat("data.ss")
+skj_rep <- r4ss::SS_output(".", printstats = FALSE, verbose = FALSE, covar = FALSE)
 
 #### TEST
 test_wt_at_age <- function(data, report, iter = 100) {
@@ -174,11 +171,4 @@ test_that("test_Nex_at_age", {
 
 
 #### END OF TESTS
-setwd("../..")
-
-message("Deleting test directory")
-unlink(run_path, recursive = TRUE)
-
-message("Testing complete")
-setwd(wd)
 
