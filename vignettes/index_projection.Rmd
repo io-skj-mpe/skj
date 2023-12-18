@@ -11,6 +11,7 @@ This vignette describes the generation of first, the exploitable biomass, and se
 
 ```{r}
 # WPTT 2020
+#run <- "io_h90_MAt_t4_rttp_tm25" 
 run <- "io_h90_q0_tlambda1"
 ```
 
@@ -45,25 +46,27 @@ copy_ss3_files(run = run, path = ".")
 
 setwd(run)
 
+print(getwd())
+list.files()
+
 # read SS files
 skj_forecast <- SS_readforecast("forecast.ss", verbose = FALSE)
 skj_dat      <- SS_readdat("data.ss", verbose = FALSE)
 skj_starter  <- SS_readstarter("starter.ss", verbose = FALSE)
 
 # use annual F-scalar
-skj_forecast$Forecast <- 5
-skj_forecast$F_scalar <- FSCALAR
-skj_forecast$Nforecastyrs <- 20
-skj_forecast$ForeCatch <- NULL
+skj_forecast$Forecast     <- 5
+skj_forecast$F_scalar     <- FSCALAR
+#skj_forecast$Nforecastyrs <- 20
+skj_forecast$ForeCatch    <- NULL
 
 SS_writeforecast(skj_forecast, dir = ".", overwrite = TRUE, verbose = FALSE)
 
 run_ss3()
-```
 
+list.files()
 
-```{r}
-skj_out <- SS_output(dir = run, covar = FALSE, printstats = FALSE, verbose = FALSE)
+skj_out <- SS_output(dir = ".", covar = FALSE, printstats = FALSE, verbose = FALSE)
 
 # get exploitable biomass
 # from numbers*weight*sel

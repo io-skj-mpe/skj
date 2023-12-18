@@ -60,7 +60,7 @@
 # Conditional input if relative F choice = 2
 # enter list of:  season,  fleet, relF; if used, terminate with season=-9999
 # 1 1 0.0558045
-# 1 2 0.0814026
+# 1 2 0.0814025
 # 1 3 0.00372954
 # 1 4 0.118534
 # 2 1 0.0608465
