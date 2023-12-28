@@ -39,6 +39,7 @@ Collate:
     'run_ss3.R'
     'set_par_forecastyrs.R'
     'tidy.R'
+    'versionUpdate.R'
     'zzz.R'
 Suggests: 
     knitr,
