@@ -3,7 +3,6 @@ vignettes/*.R
 vignettes/ss3-*
 *.zip
 *.tar.gz
-man/*.Rd
 
 *.sso
 *.log
