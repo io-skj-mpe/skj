@@ -2,7 +2,7 @@ Package: skj
 Type: Package
 Title: IOTC skipjack MPE
 Version: 0.1.7
-Date: 2023-12-17
+Date: 2023-12-28
 Author: Charles T T Edwards <cescapecs@gmail.com>
 Maintainer: Charles T T Edwards <cescapecs@gmail.com>
 Description: Function to facilitate interaction with SS3 IOTC SKJ model for purposes of performing a management strategy simulation.
