@@ -10,9 +10,8 @@ vignette: >
 This vignette describes the generation of first, the exploitable biomass, and second the associated abundance indices form the output of a SS3 model fit. 
 
 ```{r}
-# WPTT 2020
-#run <- "io_h90_MAt_t4_rttp_tm25" 
-run <- "io_h90_q0_tlambda1"
+runs <- scan(system.file("extdata", "runs_2023", package = "skj"), what = character())
+run  <- sample(runs, 1)
 ```
 
 ```{r setup, include = FALSE}
@@ -39,8 +38,6 @@ library(ggplot2)
 ```
 
 ```{r}
-FSCALAR <- 3
-
 # copy files from package
 copy_ss3_files(run = run, path = ".")
 
@@ -54,11 +51,15 @@ skj_forecast <- SS_readforecast("forecast.ss", verbose = FALSE)
 skj_dat      <- SS_readdat("data.ss", verbose = FALSE)
 skj_starter  <- SS_readstarter("starter.ss", verbose = FALSE)
 
-# use annual F-scalar
-skj_forecast$Forecast     <- 5
-skj_forecast$F_scalar     <- FSCALAR
-#skj_forecast$Nforecastyrs <- 20
+# use F-target
+skj_forecast$Forecast     <- 3
 skj_forecast$ForeCatch    <- NULL
+
+# report F as harvest rate
+skj_starter$F_report_units <- 1
+  
+# report raw F
+skj_starter$F_report_basis <- 0
 
 SS_writeforecast(skj_forecast, dir = ".", overwrite = TRUE, verbose = FALSE)
 
