@@ -1,8 +1,8 @@
 ---
-title: "Projecting under constant F"
+title: "Projecting under constant F target"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Projecting under constant F}
+  %\VignetteIndexEntry{Projecting under constant F target}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -10,7 +10,8 @@ vignette: >
 This vignette describes projection of stock biomass under a constant fishing mortality scenario. 
 
 ```{r}
-run <- "io_h90_MAt_t4_rttp_tm25"
+runs <- scan(system.file("extdata", "runs_2023", package = "skj"), what = character())
+run  <- sample(runs, 1)
 ```
 
 ```{r setup, include = FALSE}
@@ -33,8 +34,6 @@ library(r4ss)
 
 
 ```{r}
-FSCALAR <- 6
-
 # copy files from package
 copy_ss3_files(run = run, path = ".")
 
@@ -46,20 +45,24 @@ skj_dat      <- SS_readdat("data.ss", verbose = FALSE)
 skj_starter  <- SS_readstarter("starter.ss", verbose = FALSE)
 
 # use annual F-scalar
-skj_forecast$Forecast     <- 5
-skj_forecast$F_scalar     <- FSCALAR
-skj_forecast$Nforecastyrs <- 20
+skj_forecast$Forecast     <- 3
 skj_forecast$ForeCatch    <- NULL
 
+# report F as harvest rate
+skj_starter$F_report_units <- 1
+  
+# report raw F
+skj_starter$F_report_basis <- 0
+
 SS_writeforecast(skj_forecast, dir = ".", overwrite = TRUE, verbose = FALSE)
+SS_writestarter(skj_starter, dir = ".", overwrite = TRUE, verbose = FALSE)
 
 run_ss3()
 
-print(getwd())
-
 out <- SS_output(dir = ".", covar = FALSE, printstats = FALSE, verbose = FALSE)
 
-plot_Fsum(skj_dat, out); abline(h = FSCALAR, lty = 2)
-mtext(paste0("Constant F projection (F = ", FSCALAR, ")"))
+FTARGET <- out$derived_quants$Value[out$derived_quants$Label == "annF_Btgt"]
+plot_summaryF(out); abline(h = FTARGET, lty = 2)
+mtext(paste0("Constant projection at F-target (F = ", round(FTARGET, 2), ")"))
 ```
 
