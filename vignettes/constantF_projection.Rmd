@@ -44,7 +44,7 @@ skj_forecast <- SS_readforecast("forecast.ss", verbose = FALSE)
 skj_dat      <- SS_readdat("data.ss", verbose = FALSE)
 skj_starter  <- SS_readstarter("starter.ss", verbose = FALSE)
 
-# use annual F-scalar
+# use F-target
 skj_forecast$Forecast     <- 3
 skj_forecast$ForeCatch    <- NULL
 
@@ -60,7 +60,9 @@ SS_writestarter(skj_starter, dir = ".", overwrite = TRUE, verbose = FALSE)
 run_ss3()
 
 out <- SS_output(dir = ".", covar = FALSE, printstats = FALSE, verbose = FALSE)
+```
 
+```{r, fig.width = 7, fig.height = 5}
 FTARGET <- out$derived_quants$Value[out$derived_quants$Label == "annF_Btgt"]
 plot_summaryF(out); abline(h = FTARGET, lty = 2)
 mtext(paste0("Constant projection at F-target (F = ", round(FTARGET, 2), ")"))
