@@ -4,7 +4,7 @@
 #' @param data SS3 data file read using \code{r4ss::SS_readdat()}
 #' @param report SS3 output read using \code{r4ss::SS_output()}
 #' @importFrom plyr '.'
-#' @importFrom dplyr '%>%' 
+#' @importFrom dplyr %>%
 #' @importFrom dplyr filter
 #' @importFrom dplyr select
 #' @importFrom dplyr left_join
@@ -44,17 +44,17 @@ get_index <- function(data, report) {
     vuln$Fleet_label <- with(vuln, paste0(Fleet, " (", units, ")"))
     
     # get catchability and join
-    Q <- report$cpue %>% dplyr::summarise(Fleet = unique(Fleet_name), Q = unique(Calc_Q), .groups = "Fleet")
+    Q <- report$cpue %>% group_by(Fleet_name) %>% dplyr::reframe(Q = unique(Calc_Q)) %>% rename(Fleet = Fleet_name) %>% as.data.frame()
     
     vuln <- dplyr::left_join(vuln, Q, by = "Fleet")
     
     # get fleet area combinations
     retain_fleet_area <- reshape2::melt(table(report$cpue$Area, report$cpue$Fleet_name) > 0, varnames = c("Area", "Fleet")) %>% filter(value) %>% select(-value)
     
-    # calculate index
+    # calculate index from exploitable numbers or biomass
     vuln$index <- with(vuln, Vuln * Q)
     
-    # get observed values
+    # get index values
     # get from model report file
     vuln_out <- report$cpue
     colnames(vuln_out)[9] <- "Vuln"
@@ -73,6 +73,8 @@ get_index <- function(data, report) {
     vuln_out$Fleet_label <- with(vuln_out, paste0(Fleet, " (", units, ")"))
     
     # FULL JOIN
+    # (index and Exp columns are equivalent for returned Exp values:
+    # plot(Exp ~ index, vuln_full); abline(0,1))
     vuln_full <- dplyr::left_join(vuln, vuln_out, by = c("Fleet", "Area", "Seas", "Yr", "Yr_Seas", "units", "Fleet_label"), suffix = c("", "_out"))
     
     # SUBSET TO FLEET-AREA COMBINATION IN DATA
