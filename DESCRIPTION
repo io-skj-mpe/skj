@@ -1,7 +1,7 @@
 Package: skj
 Type: Package
 Title: IOTC skipjack MPE
-Version: 0.1.7
+Version: 0.1.8
 Date: 2023-12-28
 Author: Charles T T Edwards <cescapecs@gmail.com>
 Maintainer: Charles T T Edwards <cescapecs@gmail.com>
@@ -12,7 +12,7 @@ BugReports: https://github.com/cttedwards/skj/issues
 Depends:
     R (>= 3.6)
 Imports:
-    r4ss (>= 1.40),
+    r4ss (>= 1.49),
     plyr (>= 1.8),
     dplyr (>= 1.0),
     reshape2 (>= 1.4)
