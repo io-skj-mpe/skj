@@ -44,7 +44,8 @@ get_index <- function(data, report) {
     vuln$Fleet_label <- with(vuln, paste0(Fleet, " (", units, ")"))
     
     # get catchability and join
-    Q <- report$cpue %>% group_by(Fleet_name) %>% dplyr::reframe(Q = unique(Calc_Q)) %>% rename(Fleet = Fleet_name) %>% as.data.frame()
+    Q <- report$cpue %>% group_by(Fleet_name) %>% dplyr::reframe(Q = unique(Calc_Q)) %>% as.data.frame()
+    colnames(Q)[1] <- "Fleet"
     
     vuln <- dplyr::left_join(vuln, Q, by = "Fleet")
     
