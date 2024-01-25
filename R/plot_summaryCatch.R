@@ -1,7 +1,7 @@
 #' Plot the catches
 #'
 #' @param report output from call to r4ss::SS_output()
-#' @importFrom dplyr '%>%'
+#' @importFrom dplyr %>%
 #' @export
 get_catchSum <- function(data, report, fleet = NULL) {
   

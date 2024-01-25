@@ -4,10 +4,7 @@
 #' @param data SS3 data file read using \code{r4ss::SS_readdat()}
 #' @param report SS3 output read using \code{r4ss::SS_output()}
 #' @importFrom plyr '.'
-#' @importFrom dplyr %>%
-#' @importFrom dplyr filter
-#' @importFrom dplyr select
-#' @importFrom dplyr left_join
+#' @importFrom dplyr %>% filter select left_join group_by reframe
 #' @importFrom reshape2 melt
 #' @include get_Bex.R get_Nex.R read_fleetinfo.R
 #' @export
