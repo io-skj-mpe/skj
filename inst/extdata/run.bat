@@ -3,7 +3,7 @@ FOR /d %%A IN (*) DO (
 
     cd %%A
     
-    ss -nohess
+    ss3 -nohess
     
     copy starter.ss_new starter.ss
     copy data_echo.ss_new data.ss

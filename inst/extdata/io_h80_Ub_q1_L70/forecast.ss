@@ -1,4 +1,4 @@
-#V3.30.22.00;_safe;_compile_date:_Oct 30 2023;_Stock_Synthesis_by_Richard_Methot_(NOAA)_using_ADMB_13.1
+#V3.30.22.1;_safe;_compile_date:_Jan 30 2024;_Stock_Synthesis_by_Richard_Methot_(NOAA)_using_ADMB_13.1
 # for all year entries except rebuilder; enter either: actual year, -999 for styr, 0 for endyr, neg number for rel. endyr
 1 # Benchmarks: 0=skip; 1=calc F_spr,F_btgt,F_msy; 2=calc F_spr,F0.1,F_msy; 3=add F_Blimit; 
 2 # Do_MSY: 1= set to F(SPR); 2=calc F(MSY); 3=set to F(Btgt) or F0.1; 4=set to F(endyr); 5=calc F(MEY) with MSY_unit options
@@ -59,12 +59,12 @@
 2 # basis for fcast catch tuning and for fcast catch caps and allocation  (2=deadbio; 3=retainbio; 5=deadnum; 6=retainnum); NOTE: same units for all fleets
 # Conditional input if relative F choice = 2
 # enter list of:  season,  fleet, relF; if used, terminate with season=-9999
-# 1 1 0.0884784
+# 1 1 0.0884785
 # 1 2 0.0716709
 # 1 3 0.020572
 # 1 4 0.0377568
 # 1 5 0.0034627
-# 1 6 0.00649644
+# 1 6 0.00649645
 # 1 7 0.0347538
 # 2 1 0.0740084
 # 2 2 0.0507022
@@ -75,7 +75,7 @@
 # 2 7 0.0549416
 # 3 1 0.0622287
 # 3 2 0.0945512
-# 3 3 0.00460403
+# 3 3 0.00460402
 # 3 4 0.0598402
 # 3 5 0.00599074
 # 3 6 0.00547013
@@ -85,7 +85,7 @@
 # 4 3 0.00265509
 # 4 4 0.0607003
 # 4 5 0.00331296
-# 4 6 0.00505553
+# 4 6 0.00505552
 # 4 7 0.0244863
 # -9999 0 0  # terminator for list of relF
 # enter list of: fleet number, max annual catch for fleets with a max; terminate with fleet=-9999

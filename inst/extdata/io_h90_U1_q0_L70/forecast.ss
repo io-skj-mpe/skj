@@ -1,4 +1,4 @@
-#V3.30.22.00;_safe;_compile_date:_Oct 30 2023;_Stock_Synthesis_by_Richard_Methot_(NOAA)_using_ADMB_13.1
+#V3.30.22.1;_safe;_compile_date:_Jan 30 2024;_Stock_Synthesis_by_Richard_Methot_(NOAA)_using_ADMB_13.1
 # for all year entries except rebuilder; enter either: actual year, -999 for styr, 0 for endyr, neg number for rel. endyr
 1 # Benchmarks: 0=skip; 1=calc F_spr,F_btgt,F_msy; 2=calc F_spr,F0.1,F_msy; 3=add F_Blimit; 
 2 # Do_MSY: 1= set to F(SPR); 2=calc F(MSY); 3=set to F(Btgt) or F0.1; 4=set to F(endyr); 5=calc F(MEY) with MSY_unit options
@@ -75,13 +75,13 @@
 # 2 7 0.0519448
 # 3 1 0.0660352
 # 3 2 0.0873021
-# 3 3 0.00405027
+# 3 3 0.00405026
 # 3 4 0.0580509
 # 3 5 0.00576362
 # 3 6 0.00607183
 # 3 7 0.0273
 # 4 1 0.0899392
-# 4 2 0.0596058
+# 4 2 0.0596059
 # 4 3 0.00237553
 # 4 4 0.058123
 # 4 5 0.00327317

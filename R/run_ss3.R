@@ -8,7 +8,7 @@ run_ss3 <- function(admb_options = "", hess = FALSE, ignore.stdout = TRUE, admb_
   admb_options <- sanitize_admb_options(admb_options, "-noest")
   
   os <- .Platform$OS.type
-  ss_bin <- "ss"
+  ss_bin <- "ss3"
   
   bin <- Sys.which(ss_bin) #get_bin(ss_bin)
   

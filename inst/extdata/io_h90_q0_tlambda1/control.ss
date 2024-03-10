@@ -1,9 +1,9 @@
-#V3.30.22.00;_safe;_compile_date:_Oct 30 2023;_Stock_Synthesis_by_Richard_Methot_(NOAA)_using_ADMB_13.1
+#V3.30.22.1;_safe;_compile_date:_Jan 30 2024;_Stock_Synthesis_by_Richard_Methot_(NOAA)_using_ADMB_13.1
 #_Stock_Synthesis_is_a_work_of_the_U.S._Government_and_is_not_subject_to_copyright_protection_in_the_United_States.
 #_Foreign_copyrights_may_apply._See_copyright.txt_for_more_information.
 #_User_support_available_at:NMFS.Stock.Synthesis@noaa.gov
 #_User_info_available_at:https://vlab.noaa.gov/group/stock-synthesis
-#_Source_code_at:_https://github.com/nmfs-stock-synthesis/stock-synthesis
+#_Source_code_at:_https://github.com/nmfs-ost/ss3-source-code
 
 #_data_and_control_files: data.ss // control.ss
 0  # 0 means do not read wtatage.ss; 1 means read and use wtatage.ss and also read and use growth parameters
@@ -164,7 +164,7 @@
 #
 # all recruitment deviations
 #  1983R 1984R 1985R 1986R 1987R 1988R 1989R 1990R 1991R 1992R 1993R 1994R 1995R 1996R 1997R 1998R 1999R 2000R 2001R 2002R 2003R 2004R 2005R 2006R 2007R 2008R 2009R 2010R 2011R 2012R 2013R 2014R 2015R 2016R 2017R 2018R 2019F 2020F 2021F 2022F 2023F 2024F 2025F 2026F 2027F 2028F 2029F
-#  0.0948445 0.383824 -0.180608 -0.224865 -0.141235 -0.0327687 -0.193001 -0.00149585 0.0957292 -0.0763685 0.0638834 -0.261011 -0.247845 -0.241325 -0.151551 0.380114 -0.118903 -0.0191387 0.45223 0.194062 0.212035 0.53287 0.292629 -0.497911 0.101941 -0.0112499 0.00819936 -0.332189 -0.36128 -0.00714011 -0.135115 -0.222135 -0.0665702 0.2305 0.349299 0.131546 0 0 0 0 0 0 0 0 0 0 0
+#  0.0948445 0.383824 -0.180608 -0.224865 -0.141235 -0.0327687 -0.193001 -0.00149585 0.0957292 -0.0763685 0.0638834 -0.261011 -0.247845 -0.241325 -0.151551 0.380114 -0.118903 -0.0191387 0.45223 0.194062 0.212035 0.53287 0.292629 -0.497911 0.101941 -0.0112499 0.00819937 -0.332189 -0.36128 -0.00714011 -0.135115 -0.222135 -0.0665702 0.2305 0.349299 0.131546 0 0 0 0 0 0 0 0 0 0 0
 #
 #Fishing Mortality info 
 0.15 # F ballpark value in units of annual_F

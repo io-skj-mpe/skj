@@ -1,4 +1,4 @@
-#V3.30.22.00;_safe;_compile_date:_Oct 30 2023;_Stock_Synthesis_by_Richard_Methot_(NOAA)_using_ADMB_13.1
+#V3.30.22.1;_safe;_compile_date:_Jan 30 2024;_Stock_Synthesis_by_Richard_Methot_(NOAA)_using_ADMB_13.1
 # for all year entries except rebuilder; enter either: actual year, -999 for styr, 0 for endyr, neg number for rel. endyr
 1 # Benchmarks: 0=skip; 1=calc F_spr,F_btgt,F_msy; 2=calc F_spr,F0.1,F_msy; 3=add F_Blimit; 
 2 # Do_MSY: 1= set to F(SPR); 2=calc F(MSY); 3=set to F(Btgt) or F0.1; 4=set to F(endyr); 5=calc F(MEY) with MSY_unit options
@@ -67,7 +67,7 @@
 # 1 6 0.00590422
 # 1 7 0.0356329
 # 2 1 0.074332
-# 2 2 0.051265
+# 2 2 0.0512651
 # 2 3 0.01099
 # 2 4 0.0297341
 # 2 5 0.00213979
@@ -76,7 +76,7 @@
 # 3 1 0.0618403
 # 3 2 0.0959274
 # 3 3 0.00450389
-# 3 4 0.0569281
+# 3 4 0.056928
 # 3 5 0.00611302
 # 3 6 0.00462287
 # 3 7 0.0289097
@@ -85,7 +85,7 @@
 # 4 3 0.00261817
 # 4 4 0.0572142
 # 4 5 0.003423
-# 4 6 0.00413608
+# 4 6 0.00413607
 # 4 7 0.0247604
 # -9999 0 0  # terminator for list of relF
 # enter list of: fleet number, max annual catch for fleets with a max; terminate with fleet=-9999
