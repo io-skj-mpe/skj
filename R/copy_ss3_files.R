@@ -28,8 +28,8 @@ copy_ss3_files <- function(run, path, overwrite = TRUE) {
   file.copy(file.path(DIR, "forecast.ss"), file.path(path, run, "forecast.ss"), overwrite = overwrite)
   file.copy(file.path(DIR, "starter.ss"), file.path(path, run, "starter.ss"), overwrite = overwrite)
   
-  if (file.exists(file.path(DIR, "ss.par"))) {
-    file.copy(file.path(DIR, "ss.par"), file.path(path, run, "ss.par"), overwrite = overwrite)
+  if (file.exists(file.path(DIR, "ss3.par"))) {
+    file.copy(file.path(DIR, "ss3.par"), file.path(path, run, "ss3.par"), overwrite = overwrite)
   }
 }
 
