@@ -5,7 +5,7 @@
 #_User_info_available_at:https://vlab.noaa.gov/group/stock-synthesis
 #_Source_code_at:_https://github.com/nmfs-ost/ss3-source-code
 
-#_Start_time: Sun Mar 10 11:48:23 2024
+#_Start_time: Mon Oct 27 13:45:07 2025
 #_echo_input_data
 
 #V3.30.22.1;_safe;_compile_date:_Jan 30 2024;_Stock_Synthesis_by_Richard_Methot_(NOAA)_using_ADMB_13.1
@@ -3191,11 +3191,11 @@
 # 0 0 0 0 0 0 0 #_fleet:4_GL
 # 0 0 0 0 0 0 0 #_fleet:5_LI
 # 0 0 0 0 0 0 0 #_fleet:6_LL
-# 0 0 4 0 0 0 0 #_fleet:7_Other
-# 0 0 10162334 0 0 0 0 #_fleet:8_PL_CPUE
-# 0 0 1757413616 0 0 0 0 #_fleet:9_PSLS_CPUE_LONG
-# 0 0 672 0 0 0 0 #_fleet:10_BAI_CPUE
-# 0 0 1757413616 0 0 0 0 #_fleet:11_Behaviour_CPUE
+# 0 0 0 0 0 0 0 #_fleet:7_Other
+# 0 0 0 0 0 0 0 #_fleet:8_PL_CPUE
+# 0 0 0 0 0 0 0 #_fleet:9_PSLS_CPUE_LONG
+# 0 0 0 0 0 0 0 #_fleet:10_BAI_CPUE
+# 0 0 0 0 0 0 0 #_fleet:11_Behaviour_CPUE
 # 0 #_Lbin_method_for_Age_Data: 1=poplenbins; 2=datalenbins; 3=lengths
 # sex codes:  0=combined; 1=use female only; 2=use male only; 3=use both as joint sexxlength distribution
 # partition codes:  (0=combined; 1=discard; 2=retained

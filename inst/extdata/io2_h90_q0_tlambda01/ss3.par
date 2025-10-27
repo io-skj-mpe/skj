@@ -1,4 +1,4 @@
-# Number of parameters = 236 Objective function value = 512.413446507903  Maximum gradient component = 9.56735441600398e-05
+# Number of parameters = 236 Objective function value = 512.413446507903  Maximum gradient component = 9.56735310968963e-05
 # dummy_parm:
 1.00000000000
 # MGparm[1]:
@@ -162,7 +162,7 @@
 # selparm[19]:
 0.778716286171
 # selparm[20]:
-0.000688922681699
+0.000688922681698
 # selparm[21]:
 23.1250000000
 # selparm[22]:

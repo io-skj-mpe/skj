@@ -72,9 +72,9 @@
 # 3 3 0.00177803
 # 3 4 0.0921782
 # 4 1 0.0948862
-# 4 2 0.0899631
+# 4 2 0.0899632
 # 4 3 0.00154929
-# 4 4 0.0902798
+# 4 4 0.0902797
 # -9999 0 0  # terminator for list of relF
 # enter list of: fleet number, max annual catch for fleets with a max; terminate with fleet=-9999
 -9999 -1
