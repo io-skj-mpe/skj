@@ -1,7 +1,7 @@
 Package: skj
 Type: Package
 Title: IOTC skipjack MPE
-Version: 0.1.4
+Version: 0.1.5
 Date: 2025-10-27
 Author: Charles T T Edwards <cescapecs@gmail.com>
 Maintainer: Charles T T Edwards <cescapecs@gmail.com>
