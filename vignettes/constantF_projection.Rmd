@@ -11,7 +11,7 @@ This vignette describes projection of stock biomass under a constant fishing mor
 
 ```{r}
 runs <- scan(system.file("extdata", "runs_2023", package = "skj"), what = character())
-run  <- sample(runs, 1)
+#run  <- sample(runs, 1)
 ```
 
 ```{r setup, include = FALSE}
