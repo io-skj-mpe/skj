@@ -1,18 +1,17 @@
 #' Run SS3
 #' 
 #' @export
-run_ss3 <- function(admb_options = "", hess = FALSE, ignore.stdout = TRUE, admb_pause = 0.05, show.output.on.console = FALSE, ...) {
+run_ss3 <- function(admb_options = "", ss_bin = "ss3", hess = FALSE, ignore.stdout = TRUE, admb_pause = 0.05, show.output.on.console = FALSE, ...) {
   
   # Input checking:
   admb_options <- sanitize_admb_options(admb_options, "-nohess")
   admb_options <- sanitize_admb_options(admb_options, "-noest")
   
   os <- .Platform$OS.type
-  ss_bin <- "ss3"
   
   bin <- Sys.which(ss_bin) #get_bin(ss_bin)
   
-  if (bin == "") stop("The SS3 executable 'ss' was not found in your path")
+  if (bin == "") stop("The SS3 executable was not found in your path")
   
   ss_em_options <- ifelse(hess, "", "-nohess")
   
